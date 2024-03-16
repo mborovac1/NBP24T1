@@ -1,6 +1,7 @@
 package ba.team1.ads_project.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class Movie {
     @Column(name = "id")
     private Long id;
 
-    @NotEmpty(message = "Movie name must exist.")
+    @NotBlank(message = "Movie name must exist.")
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -31,7 +32,7 @@ public class Movie {
     @Column(name = "duration", nullable = false)
     private Integer duration;
 
-    @NotEmpty(message = "Movie description must exist.")
+    @NotBlank(message = "Movie description must exist.")
     @Column(name = "description", nullable = false)
     private String description;
 
@@ -46,8 +47,8 @@ public class Movie {
     )
     private List<Genre> genres = new ArrayList<>();
 
-    @OneToOne(mappedBy = "movie")
-    private Ticket ticket;
+    @OneToMany(mappedBy = "movie")
+    private List<Ticket> tickets = new ArrayList<>();
 
     @OneToMany(mappedBy = "movie")
     private List<MovieReview> reviews = new ArrayList<>();

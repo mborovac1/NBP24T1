@@ -2,7 +2,7 @@ package ba.team1.ads_project.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +21,7 @@ public class Address {
     @Column(name = "id")
     private Long id;
 
-    @NotEmpty(message = "Address name must exist.")
+    @NotBlank(message = "Address name must exist.")
     @Column(name = "name", nullable = false)
     private String name;
 

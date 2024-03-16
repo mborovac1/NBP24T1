@@ -2,6 +2,7 @@ package ba.team1.ads_project.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class Seat {
     @Column(name = "number", nullable = false)
     private Integer number;
 
-    @NotEmpty(message = "Seat type must exist.")
+    @NotBlank(message = "Seat type must exist.")
     @Column(name = "type", nullable = false)
     private String type;
 

@@ -2,7 +2,7 @@ package ba.team1.ads_project.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +24,7 @@ public class Genre {
     @Column(name = "id")
     private Long id;
 
-    @NotEmpty(message = "Genre name must exist.")
+    @NotBlank(message = "Genre name must exist.")
     @Column(name = "name", nullable = false)
     private String name;
 

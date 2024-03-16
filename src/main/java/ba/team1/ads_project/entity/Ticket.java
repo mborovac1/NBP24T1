@@ -1,5 +1,6 @@
 package ba.team1.ads_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Ticket")
@@ -29,8 +30,9 @@ public class Ticket {
     @Column(name = "number", nullable = false)
     private Integer number;
 
+    @JsonFormat(pattern = "HH:mm")
     @Column(name = "start_time")
-    private LocalDate startTime;
+    private LocalDateTime startTime;
 
     @NotEmpty(message = "Ticket price must exist.")
     @Positive(message = "Ticket price must be a positive number.")
@@ -38,7 +40,7 @@ public class Ticket {
     private Double price;
 
     @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
 

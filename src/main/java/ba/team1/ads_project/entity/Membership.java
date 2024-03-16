@@ -3,6 +3,7 @@ package ba.team1.ads_project.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -35,7 +36,7 @@ public class Membership {
     @Column(name = "discount", nullable = false)
     private Double discount;
 
-    @NotEmpty(message = "Membership type must exist.")
+    @NotBlank(message = "Membership type must exist.")
     @Column(name = "type", nullable = false)
     private String type;
 }
