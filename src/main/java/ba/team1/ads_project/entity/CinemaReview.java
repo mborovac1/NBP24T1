@@ -1,5 +1,6 @@
 package ba.team1.ads_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -9,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table(name = "CinemaReview")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -28,4 +29,9 @@ public class CinemaReview {
     @Positive(message = "Cinema rating must be a positive number.")
     @Column(name = "rating", nullable = false)
     private Double rating;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "cinema_id")
+    private Cinema cinema;
 }

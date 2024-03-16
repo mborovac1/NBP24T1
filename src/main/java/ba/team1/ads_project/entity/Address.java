@@ -1,5 +1,6 @@
 package ba.team1.ads_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table(name = "Address")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -23,4 +24,12 @@ public class Address {
     @NotEmpty(message = "Address name must exist.")
     @Column(name = "name", nullable = false)
     private String name;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    private City city;
+
+    @OneToOne(mappedBy = "address")
+    private Cinema cinema;
 }

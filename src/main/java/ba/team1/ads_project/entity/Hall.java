@@ -1,5 +1,6 @@
 package ba.team1.ads_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -9,8 +10,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table
+@Table(name = "Hall")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -30,4 +34,12 @@ public class Hall {
     @NotEmpty(message = "Hall capacity must exist.")
     @PositiveOrZero(message = "Hall capacity must be a non-negative number.")
     private Integer capacity;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "cinema_id")
+    private Cinema cinema;
+
+    @OneToMany(mappedBy = "hall")
+    private List<Seat> seats = new ArrayList<>();
 }

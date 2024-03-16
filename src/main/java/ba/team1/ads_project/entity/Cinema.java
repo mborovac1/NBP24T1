@@ -1,5 +1,6 @@
 package ba.team1.ads_project.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -7,8 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table
+@Table(name = "Cinema")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -24,4 +28,18 @@ public class Cinema {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    @OneToMany(mappedBy = "cinema")
+    private List<CinemaReview> reviews = new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "cinemas")
+    private List<Movie> movies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cinema")
+    private List<Hall> halls = new ArrayList<>();
 }

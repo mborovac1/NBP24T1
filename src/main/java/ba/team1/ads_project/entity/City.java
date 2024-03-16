@@ -8,8 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table
+@Table(name = "City")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -29,4 +32,7 @@ public class City {
     @PositiveOrZero(message = "City postcode must be a non-negative number.")
     @Column(name = "postcode", nullable = false)
     private Long postcode;
+
+    @OneToMany(mappedBy = "city")
+    private List<Address> addresses = new ArrayList<>();
 }
