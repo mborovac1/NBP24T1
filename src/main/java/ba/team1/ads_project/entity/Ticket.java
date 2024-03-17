@@ -47,4 +47,9 @@ public class Ticket {
     @OneToOne
     @JoinColumn(name = "seat_id")
     private Seat seat;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "cinema_user_id")
+    private CinemaUser cinemaUser;
 }

@@ -2,7 +2,6 @@ package ba.team1.ads_project.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,30 +11,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Address")
+@Table(name = "CinemaUser")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class Address {
+public class CinemaUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "Address name must exist.")
-    @Column(name = "name", nullable = false)
-    private String name;
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private NbpUser nbpUser;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "city_id")
-    private City city;
+    @JoinColumn(name = "membership_id")
+    private Membership membership;
 
-    @OneToOne(mappedBy = "address")
-    private Cinema cinema;
-
-    @OneToMany(mappedBy = "address")
-    private List<NbpUser> nbpUsers = new ArrayList<>();
+    @OneToMany(mappedBy = "cinemaUser")
+    private List<Ticket> tickets = new ArrayList<>();
 }

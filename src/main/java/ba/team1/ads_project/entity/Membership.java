@@ -12,6 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Membership")
@@ -39,4 +41,7 @@ public class Membership {
     @NotBlank(message = "Membership type must exist.")
     @Column(name = "type", nullable = false)
     private String type;
+
+    @OneToMany(mappedBy = "membership")
+    private List<CinemaUser> cinemaUsers = new ArrayList<>();
 }
