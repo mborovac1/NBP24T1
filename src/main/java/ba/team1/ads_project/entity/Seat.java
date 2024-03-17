@@ -23,10 +23,9 @@ public class Seat {
     @Column(name = "id")
     private Long id;
 
-    @NotEmpty(message = "Seat row must exist.")
-    @Positive(message = "Seat row must be a positive number.")
-    @Column(name = "seat_row", nullable = false)
-    private Integer row;
+    @NotBlank(message = "Seat row must exist.")
+    @Column(name = "seat_row", nullable = false, length = 2)
+    private String row;
 
     @NotEmpty(message = "Seat number must exist.")
     @Positive(message = "Seat number must be a positive number.")
@@ -34,15 +33,15 @@ public class Seat {
     private Integer number;
 
     @NotBlank(message = "Seat type must exist.")
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = false, length = 50)
     private String type;
-
-    @JsonIgnore
-    @OneToOne(mappedBy = "seat")
-    private Ticket ticket;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "hall_id")
     private Hall hall;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "seat")
+    private Ticket ticket;
 }

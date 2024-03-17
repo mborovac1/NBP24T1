@@ -22,16 +22,16 @@ public class NbpLog {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "action_name")
+    @Column(name = "action_name", nullable = false)
     private String actionName;
 
-    @Column(name = "table_name")
+    @Column(name = "table_name", nullable = false)
     private String tableName;
 
     @Builder.Default
     @Column(name = "created_at")
     private Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
 
-    @Column(name = "db_user")
+    @Column(name = "db_user", nullable = false)
     private String dbUser;
 }

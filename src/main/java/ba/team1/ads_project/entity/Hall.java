@@ -26,14 +26,14 @@ public class Hall {
     @Column(name = "id")
     private Long id;
 
+    @NotEmpty(message = "Hall capacity must exist.")
+    @PositiveOrZero(message = "Hall capacity must be a non-negative number.")
+    private Integer capacity;
+
     @NotEmpty(message = "Hall number must exist.")
     @Positive(message = "Hall number must be a positive number.")
     @Column(name = "number", nullable = false, unique = true)
     private Integer number;
-
-    @NotEmpty(message = "Hall capacity must exist.")
-    @PositiveOrZero(message = "Hall capacity must be a non-negative number.")
-    private Integer capacity;
 
     @JsonIgnore
     @ManyToOne

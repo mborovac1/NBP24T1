@@ -35,4 +35,10 @@ public class CinemaUser {
 
     @OneToMany(mappedBy = "cinemaUser")
     private List<Ticket> tickets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cinemaUser")
+    private List<CinemaReview> cinemaReviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cinemaUser")
+    private List<MovieReview> movieReviews = new ArrayList<>();
 }

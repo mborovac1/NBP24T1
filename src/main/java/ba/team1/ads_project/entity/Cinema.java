@@ -25,7 +25,7 @@ public class Cinema {
     private Long id;
 
     @NotBlank(message = "Cinema name must exist.")
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
     @JsonIgnore
@@ -33,13 +33,13 @@ public class Cinema {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany(mappedBy = "cinema")
-    private List<CinemaReview> reviews = new ArrayList<>();
-
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "cinemas")
     private List<Movie> movies = new ArrayList<>();
 
     @OneToMany(mappedBy = "cinema")
     private List<Hall> halls = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cinema")
+    private List<CinemaReview> reviews = new ArrayList<>();
 }

@@ -31,7 +31,7 @@ public class Ticket {
     private Integer number;
 
     @JsonFormat(pattern = "HH:mm")
-    @Column(name = "start_time")
+    @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
 
     @NotEmpty(message = "Ticket price must exist.")

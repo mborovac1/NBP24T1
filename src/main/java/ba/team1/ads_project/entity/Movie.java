@@ -25,7 +25,7 @@ public class Movie {
     private Long id;
 
     @NotBlank(message = "Movie name must exist.")
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
     @NotEmpty(message = "Movie duration must exist.")
@@ -36,7 +36,7 @@ public class Movie {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "poster_path")
+    @Column(name = "poster_path", nullable = false)
     private String posterPath;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
@@ -47,12 +47,6 @@ public class Movie {
     )
     private List<Genre> genres = new ArrayList<>();
 
-    @OneToMany(mappedBy = "movie")
-    private List<Ticket> tickets = new ArrayList<>();
-
-    @OneToMany(mappedBy = "movie")
-    private List<MovieReview> reviews = new ArrayList<>();
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "MovieCinema",
@@ -60,4 +54,10 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "cinema_id")
     )
     private List<Cinema> cinemas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie")
+    private List<Ticket> tickets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie")
+    private List<MovieReview> reviews = new ArrayList<>();
 }

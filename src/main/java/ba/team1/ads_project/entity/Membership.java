@@ -28,18 +28,18 @@ public class Membership {
     @Column(name = "id")
     private Long id;
 
-    @FutureOrPresent(message = "Membership expire date must be in future.")
-    @JsonFormat(pattern = "dd.MM.yyyy.")
-    @Column(name = "expire_date")
-    private LocalDate expireDate;
-
     @NotEmpty(message = "Membership discount must exist.")
     @PositiveOrZero(message = "Membership discount must be a non-negative number.")
     @Column(name = "discount", nullable = false)
     private Double discount;
 
+    @FutureOrPresent(message = "Membership expire date must be in future.")
+    @JsonFormat(pattern = "dd.MM.yyyy.")
+    @Column(name = "expiry_date")
+    private LocalDate expiryDate;
+
     @NotBlank(message = "Membership type must exist.")
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = false, length = 50)
     private String type;
 
     @OneToMany(mappedBy = "membership")

@@ -26,13 +26,13 @@ public class City {
     private Long id;
 
     @NotBlank(message = "City name must exist.")
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
     @NotEmpty(message = "City postcode must exist.")
     @PositiveOrZero(message = "City postcode must be a non-negative number.")
     @Column(name = "postcode", nullable = false)
-    private Long postcode;
+    private Integer postcode;
 
     @OneToMany(mappedBy = "city")
     private List<Address> addresses = new ArrayList<>();

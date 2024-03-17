@@ -28,36 +28,33 @@ public class NbpUser {
     private Long id;
 
     @NotBlank(message = "First name must exist.")
-    @Size(min = 3, max = 255, message = "First name must contain 3-255 characters.")
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @NotBlank(message = "Last name must exist.")
-    @Size(min = 2, max = 255, message = "First name must contain 2-255 characters.")
     @Column(name = "last_name", nullable = false)
     private String lastName;
-
-    @JsonFormat(pattern = "dd.MM.yyyy.")
-    @Past(message = "Birth date must be in the past.")
-    @Column(name = "birth_date")
-    private LocalDate birthDate;
-
-    @Column(name = "phone_number", length = 20)
-    private String phoneNumber;
 
     @NotBlank(message = "Email must exist.")
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "Password must exist.")
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @NotBlank(message = "Username must exist.")
-    @Size(min = 3, max = 255, message = "Username must contain 3-255 characters.")
-    @Column(name = "username")
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @NotBlank(message = "Password must exist.")
-    @Column(name = "password")
-    private String password;
+    @Column(name = "phone_number", length = 20)
+    private String phoneNumber;
+
+    @JsonFormat(pattern = "dd.MM.yyyy.")
+    @Past(message = "Birth date must be in the past.")
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
 
     @JsonIgnore
     @ManyToOne
