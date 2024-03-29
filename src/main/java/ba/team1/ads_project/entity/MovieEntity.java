@@ -8,20 +8,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
-@Table(name = "Movie")
+@Table(name = "Movie", schema = "NBP24T1")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class Movie {
+public class MovieEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
     @NotBlank(message = "Movie name must exist.")
@@ -38,26 +35,4 @@ public class Movie {
 
     @Column(name = "poster_path", nullable = false)
     private String posterPath;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinTable(
-            name = "MovieGenre",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "genre_id")
-    )
-    private List<Genre> genres = new ArrayList<>();
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "MovieCinema",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "cinema_id")
-    )
-    private List<Cinema> cinemas = new ArrayList<>();
-
-    @OneToMany(mappedBy = "movie")
-    private List<Ticket> tickets = new ArrayList<>();
-
-    @OneToMany(mappedBy = "movie")
-    private List<MovieReview> reviews = new ArrayList<>();
 }

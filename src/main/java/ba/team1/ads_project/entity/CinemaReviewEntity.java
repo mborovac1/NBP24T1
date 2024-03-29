@@ -1,6 +1,5 @@
 package ba.team1.ads_project.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -11,34 +10,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "MovieReview")
+@Table(name = "CinemaReview", schema = "NBP24T1")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class MovieReview {
+public class CinemaReviewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
-    @NotBlank(message = "Movie review text must exist.")
+    @NotBlank(message = "Cinema review text must exist.")
     @Column(name = "text", nullable = false)
     private String text;
 
-    @NotEmpty(message = "Movie rating must exist.")
-    @Positive(message = "Movie rating must be a positive number.")
+    @NotEmpty(message = "Cinema rating must exist.")
+    @Positive(message = "Cinema rating must be a positive number.")
     @Column(name = "rating", nullable = false)
     private Double rating;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "cinema_user_id")
-    private CinemaUser cinemaUser;
+    @Column(name = "cinema_user_id")
+    private Integer cinemaUserId;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "movie_id")
-    private Movie movie;
+    @Column(name = "cinema_id")
+    private Integer cinemaId;
 }

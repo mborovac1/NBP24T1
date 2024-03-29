@@ -1,6 +1,5 @@
 package ba.team1.ads_project.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -11,16 +10,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Seat")
+@Table(name = "Seat", schema = "NBP24T1")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class Seat {
+public class SeatEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
     @NotBlank(message = "Seat row must exist.")
@@ -29,19 +28,13 @@ public class Seat {
 
     @NotEmpty(message = "Seat number must exist.")
     @Positive(message = "Seat number must be a positive number.")
-    @Column(name = "number", nullable = false)
+    @Column(name = "seat_number", nullable = false)
     private Integer number;
 
     @NotBlank(message = "Seat type must exist.")
-    @Column(name = "type", nullable = false, length = 50)
+    @Column(name = "seat_type", nullable = false, length = 50)
     private String type;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "hall_id")
-    private Hall hall;
-
-    @JsonIgnore
-    @OneToOne(mappedBy = "seat")
-    private Ticket ticket;
+    @Column(name = "hall_id")
+    private Integer hallId;
 }

@@ -1,6 +1,5 @@
 package ba.team1.ads_project.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,34 +7,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
-@Table(name = "Address")
+@Table(name = "Address", schema = "NBP24T1")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class Address {
+public class AddressEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
     @NotBlank(message = "Address name must exist.")
     @Column(name = "name", nullable = false)
     private String name;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "city_id")
-    private City city;
-
-    @OneToOne(mappedBy = "address")
-    private Cinema cinema;
-
-    @OneToMany(mappedBy = "address")
-    private List<NbpUser> nbpUsers = new ArrayList<>();
+    @Column(name = "city_id")
+    private Integer cityId;
 }

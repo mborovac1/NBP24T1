@@ -12,20 +12,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "Membership")
+@Table(name = "Membership", schema = "NBP24T1")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class Membership {
+public class MembershipEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
     @NotEmpty(message = "Membership discount must exist.")
@@ -41,7 +39,4 @@ public class Membership {
     @NotBlank(message = "Membership type must exist.")
     @Column(name = "type", nullable = false, length = 50)
     private String type;
-
-    @OneToMany(mappedBy = "membership")
-    private List<CinemaUser> cinemaUsers = new ArrayList<>();
 }

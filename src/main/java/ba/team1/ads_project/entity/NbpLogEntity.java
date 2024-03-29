@@ -10,28 +10,27 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "nbp_log")
+@Table(name = "NBP_LOG", schema = "NBP")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class NbpLog {
+public class NbpLogEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "action_name", nullable = false)
+    @Column(name = "ACTION_NAME", nullable = false)
     private String actionName;
 
-    @Column(name = "table_name", nullable = false)
+    @Column(name = "TABLE_NAME", nullable = false)
     private String tableName;
 
-    @Builder.Default
-    @Column(name = "created_at")
-    private Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
+    @Column(name = "DATE_TIME", nullable = false)
+    private Timestamp createdAt;
 
-    @Column(name = "db_user", nullable = false)
+    @Column(name = "DB_USER")
     private String dbUser;
 }

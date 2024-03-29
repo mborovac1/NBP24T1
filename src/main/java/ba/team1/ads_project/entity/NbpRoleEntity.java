@@ -6,25 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
-@Table(name = "nbp_role")
+@Table(name = "NBP_ROLE", schema = "NBP")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class NbpRole {
+public class NbpRoleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "name", length = 50, nullable = false, unique = true)
+    @Column(name = "NAME", length = 50, nullable = false, unique = true)
     private String name;
-
-    @OneToMany(mappedBy = "nbpRole")
-    private List<NbpUser> nbpUsers = new ArrayList<>();
 }
