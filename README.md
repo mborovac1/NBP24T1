@@ -1,4 +1,4 @@
-Advanced Database Systems Project 2023./2024.
+NBP24T1
 
 - Benjamin Pašić
 - Ahmedin Hasanović

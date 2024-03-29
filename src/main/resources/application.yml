@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: AdvancedDatabaseSystems_Project
+    name: NBP24T1
   datasource:
     url: jdbc:oracle:thin:@ora-02.db.lab.etf.unsa.ba:1521:ETFDB
     username: NBP24T1
