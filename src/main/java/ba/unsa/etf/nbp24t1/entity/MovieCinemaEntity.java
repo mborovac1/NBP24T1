@@ -20,8 +20,8 @@ public class MovieCinemaEntity {
     private Long id;
 
     @Column(name = "movie_id")
-    private Integer movieId;
+    private Long movieId;
 
     @Column(name = "cinema_id")
-    private Integer cinemaId;
+    private Long cinemaId;
 }

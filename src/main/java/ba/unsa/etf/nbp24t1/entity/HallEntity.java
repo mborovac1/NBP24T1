@@ -32,5 +32,5 @@ public class HallEntity {
     private Integer number;
 
     @Column(name = "cinema_id")
-    private Integer cinemaId;
+    private Long cinemaId;
 }

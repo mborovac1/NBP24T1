@@ -39,11 +39,11 @@ public class TicketEntity {
     private Double price;
 
     @Column(name = "movie_id")
-    private Integer movie_id;
+    private Long movie_id;
 
     @Column(name = "seat_id")
-    private Integer cityId;
+    private Long cityId;
 
     @Column(name = "cinema_user_id")
-    private Integer cinemaUserId;
+    private Long cinemaUserId;
 }

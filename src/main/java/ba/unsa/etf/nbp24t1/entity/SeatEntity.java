@@ -36,5 +36,5 @@ public class SeatEntity {
     private String type;
 
     @Column(name = "hall_id")
-    private Integer hallId;
+    private Long hallId;
 }

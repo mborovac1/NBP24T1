@@ -25,5 +25,5 @@ public class AddressEntity {
     private String name;
 
     @Column(name = "city_id")
-    private Integer cityId;
+    private Long cityId;
 }

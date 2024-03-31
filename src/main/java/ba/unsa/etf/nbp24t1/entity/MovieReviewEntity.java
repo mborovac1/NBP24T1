@@ -32,8 +32,8 @@ public class MovieReviewEntity {
     private Double rating;
 
     @Column(name = "cinema_user_id")
-    private Integer cinemaUserId;
+    private Long cinemaUserId;
 
     @Column(name = "movie_id")
-    private Integer movieId;
+    private Long movieId;
 }

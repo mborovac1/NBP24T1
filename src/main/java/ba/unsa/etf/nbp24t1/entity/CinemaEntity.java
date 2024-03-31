@@ -25,5 +25,5 @@ public class CinemaEntity {
     private String name;
 
     @Column(name = "address_id")
-    private Integer addressId;
+    private Long addressId;
 }
