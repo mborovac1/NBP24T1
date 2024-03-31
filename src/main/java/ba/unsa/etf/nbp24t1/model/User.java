@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @Builder
-public class NbpUser {
+public class User {
 
     @NotBlank(message = "First name must exist.")
     private String firstName;
@@ -44,4 +44,6 @@ public class NbpUser {
     private String city;
 
     private Integer postcode;
+
+    private String membership;
 }

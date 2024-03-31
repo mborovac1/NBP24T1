@@ -1,15 +1,13 @@
 package ba.unsa.etf.nbp24t1.service;
 
 import ba.unsa.etf.nbp24t1.entity.AddressEntity;
+import ba.unsa.etf.nbp24t1.entity.CinemaUserEntity;
 import ba.unsa.etf.nbp24t1.entity.CityEntity;
 import ba.unsa.etf.nbp24t1.entity.NbpUserEntity;
 import ba.unsa.etf.nbp24t1.exception.AlreadyExistsException;
 import ba.unsa.etf.nbp24t1.exception.NotFoundException;
-import ba.unsa.etf.nbp24t1.model.NbpUser;
-import ba.unsa.etf.nbp24t1.repository.AddressRepository;
-import ba.unsa.etf.nbp24t1.repository.CityRepository;
-import ba.unsa.etf.nbp24t1.repository.NbpRoleRepository;
-import ba.unsa.etf.nbp24t1.repository.NbpUserRepository;
+import ba.unsa.etf.nbp24t1.model.User;
+import ba.unsa.etf.nbp24t1.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +24,8 @@ public class NbpUserServiceImpl implements NbpUserService {
     private final NbpRoleRepository nbpRoleRepository;
     private final AddressRepository addressRepository;
     private final CityRepository cityRepository;
+    private final CinemaUserRepository cinemaUserRepository;
+    private final MembershipRepository membershipRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -39,15 +39,15 @@ public class NbpUserServiceImpl implements NbpUserService {
     }
 
     @Override
-    public void add(NbpUser nbpUser) {
-        if (nbpUserRepository.existsByEmail(nbpUser.getEmail()))
-            throw new AlreadyExistsException(String.format("User with email %s already exists.", nbpUser.getEmail()));
-        var nbpUserEntity = mapToNbpUserEntity(nbpUser);
-        nbpUserRepository.save(nbpUserEntity);
+    public void add(User user) {
+        if (nbpUserRepository.existsByEmail(user.getEmail()))
+            throw new AlreadyExistsException(String.format("User with email %s already exists.", user.getEmail()));
+        var nbpUserEntity = mapToNbpUserEntity(user);
+        createCinemaUser(user, nbpUserRepository.save(nbpUserEntity));
     }
 
     @Override
-    public void update(Long id, NbpUser nbpUser) {
+    public void update(Long id, User user) {
         // TODO: Implement
     }
 
@@ -56,42 +56,42 @@ public class NbpUserServiceImpl implements NbpUserService {
         // TODO: Implement
     }
 
-    private NbpUserEntity mapToNbpUserEntity(NbpUser nbpUser) {
+    private NbpUserEntity mapToNbpUserEntity(User user) {
         // TODO: Create CinemaUser and map it to this NbpUser
         var nbpUserEntity = new NbpUserEntity();
 
-        String firstName = nbpUser.getFirstName();
+        String firstName = user.getFirstName();
         if (StringUtils.isNotBlank(firstName))
             nbpUserEntity.setFirstName(firstName);
 
-        String lastName = nbpUser.getLastName();
+        String lastName = user.getLastName();
         if (StringUtils.isNotBlank(lastName))
             nbpUserEntity.setLastName(lastName);
 
-        String email = nbpUser.getEmail();
+        String email = user.getEmail();
         if (StringUtils.isNotBlank(email))
             nbpUserEntity.setEmail(email);
 
-        String password = nbpUser.getPassword();
+        String password = user.getPassword();
         if (StringUtils.isNotBlank(password))
             nbpUserEntity.setPassword(passwordEncoder.encode(password));
 
-        String username = nbpUser.getUsername();
+        String username = user.getUsername();
         if (StringUtils.isNotBlank(username))
             nbpUserEntity.setUsername(username);
 
-        String phoneNumber = nbpUser.getPhoneNumber();
+        String phoneNumber = user.getPhoneNumber();
         if (StringUtils.isNotBlank(phoneNumber))
             nbpUserEntity.setPhoneNumber(phoneNumber);
 
-        LocalDate birthDate = nbpUser.getBirthDate();
+        LocalDate birthDate = user.getBirthDate();
         if (birthDate != null && !birthDate.isAfter(LocalDate.now()))
             nbpUserEntity.setBirthDate(birthDate);
 
-        String address = nbpUser.getAddress();
+        String address = user.getAddress();
         if (StringUtils.isNotBlank(address)) {
             var addressEntity = addressRepository.findByName(address)
-                    .orElseGet(() -> createAddressEntity(nbpUser));
+                    .orElseGet(() -> createAddressEntity(user));
             nbpUserEntity.setAddressId(addressEntity.getId());
         }
 
@@ -103,14 +103,25 @@ public class NbpUserServiceImpl implements NbpUserService {
         return nbpUserEntity;
     }
 
-    private AddressEntity createAddressEntity(NbpUser nbpUser) {
-        AddressEntity addressEntity = new AddressEntity();
-        addressEntity.setName(nbpUser.getAddress());
+    private void createCinemaUser(User user, NbpUserEntity nbpUserEntity) {
+        String membershipType = user.getMembership();
+        var cinemaUserEntity = new CinemaUserEntity();
+        cinemaUserEntity.setUserId(nbpUserEntity.getId());
+        if (StringUtils.isNotBlank(membershipType)) {
+            var membershipEntity = membershipRepository.findByType(membershipType);
+            membershipEntity.ifPresent(entity -> cinemaUserEntity.setMembershipId(entity.getId()));
+        }
+        cinemaUserRepository.save(cinemaUserEntity);
+    }
 
-        String city = nbpUser.getCity();
+    private AddressEntity createAddressEntity(User user) {
+        AddressEntity addressEntity = new AddressEntity();
+        addressEntity.setName(user.getAddress());
+
+        String city = user.getCity();
         if (StringUtils.isNotBlank(city)) {
             var cityEntity = cityRepository.findByName(city)
-                    .orElseGet(() -> createCityEntity(nbpUser));
+                    .orElseGet(() -> createCityEntity(user));
             addressEntity.setCityId(cityEntity.getId());
         }
 
@@ -118,11 +129,11 @@ public class NbpUserServiceImpl implements NbpUserService {
         return addressEntity;
     }
 
-    private CityEntity createCityEntity(NbpUser nbpUser) {
+    private CityEntity createCityEntity(User user) {
         CityEntity cityEntity = new CityEntity();
-        cityEntity.setName(nbpUser.getCity());
+        cityEntity.setName(user.getCity());
 
-        var postcode = nbpUser.getPostcode();
+        var postcode = user.getPostcode();
         if (postcode != null)
             cityEntity.setPostcode(postcode);
 
