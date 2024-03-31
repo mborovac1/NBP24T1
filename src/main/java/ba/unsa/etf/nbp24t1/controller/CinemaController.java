@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@RequestMapping("/cinema")
+@RequestMapping("/cinemas")
 @RestController
 public class CinemaController {
 
