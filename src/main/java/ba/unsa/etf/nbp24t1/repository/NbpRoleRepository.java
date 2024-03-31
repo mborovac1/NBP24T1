@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NbpRoleRepository extends JpaRepository<NbpRoleEntity, Long> {
+
+    Boolean existsByName(String name);
 }
