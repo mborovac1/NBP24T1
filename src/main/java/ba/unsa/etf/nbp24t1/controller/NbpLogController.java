@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/nbpLogs")
+@RequestMapping("/api/nbpLogs")
 @RestController
 public class NbpLogController {
 
