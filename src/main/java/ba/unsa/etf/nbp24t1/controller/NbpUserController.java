@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/nbpUsers")
+@RequestMapping("/api/nbpUsers")
 @RestController
 public class NbpUserController {
 

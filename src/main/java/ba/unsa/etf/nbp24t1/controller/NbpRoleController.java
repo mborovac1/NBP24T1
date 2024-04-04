@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/nbpRoles")
+@RequestMapping("/api/nbpRoles")
 @RestController
 public class NbpRoleController {
 
