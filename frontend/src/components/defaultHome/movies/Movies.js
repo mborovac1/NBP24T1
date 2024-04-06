@@ -10,6 +10,7 @@ const Movies = () => {
   const [filmovi, setFilmovi] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [allGenres, setAllGenres] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredMovies, setFilteredMovies] = useState([]);
 
@@ -18,6 +19,13 @@ const Movies = () => {
       .then((res) => res.json())
       .then((result) => {
         setFilmovi(result);
+      });
+
+      fetch("http://localhost:8080/api/movieGenres/")
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result);
+        setAllGenres(result);
       });
 
     filterMovies();
@@ -37,13 +45,21 @@ const Movies = () => {
 
   const filterMovies = () => {
     const filteredMovies = filmovi.filter((movie) => {
-      let onlyGenres = selectedGenres.map((el) => el.name);
+      let onlyGenres = selectedGenres.map((el) => el.id);
+      const movieGenreIds = allGenres.filter((mg) => mg.movieId === movie.id).map((mg) => mg.genreId);
+
+        if (selectedGenres.length > 0) {
+            const hasCommonGenre = movieGenreIds.some((movieGenreId) => {
+                return selectedGenres.some((selectedGenre) => selectedGenre.id === movieGenreId);
+            });
+            return hasCommonGenre;
+        }
       //let allGenresCurr = movie.zanrovi.map((el) => el.name); //TODO
-      //const hasCommonElement = onlyGenres.every((element) => allGenresCurr.includes(element)); TODO
+      /* const hasCommonElement = onlyGenres.every((element) => allGenresCurr.includes(element));
         //FIX IZNAD
-      if (selectedGenres.length > 0){ //&& !hasCommonElement) {
+      if (selectedGenres.length > 0 && !hasCommonElement) {
         return false;
-      }
+      } */
 
       // Filter based on search term
       if (searchTerm !== "" && !movie.name.toLowerCase().includes(searchTerm.toLowerCase())) {
