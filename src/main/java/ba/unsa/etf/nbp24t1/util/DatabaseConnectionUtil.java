@@ -1,6 +1,8 @@
 package ba.unsa.etf.nbp24t1.util;
 
 import ba.unsa.etf.nbp24t1.repository.*;
+import ba.unsa.etf.nbp24t1.repository.auth.TokenRepository;
+import ba.unsa.etf.nbp24t1.repository.auth.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,8 @@ public class DatabaseConnectionUtil {
     private final NbpUserRepository nbpUserRepository;
     private final SeatRepository seatRepository;
     private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
     @PostConstruct
     private void fetchDatabaseData() {
@@ -48,5 +52,7 @@ public class DatabaseConnectionUtil {
         log.info("NBP Users: " + nbpUserRepository.findAll());
         log.info("Seats: " + seatRepository.findAll());
         log.info("Tickets: " + ticketRepository.findAll());
+        log.info("Users: " + userRepository.findAll());
+        log.info("Tokens: " + tokenRepository.findAll());
     }
 }

@@ -3,7 +3,7 @@ package ba.unsa.etf.nbp24t1.controller;
 import ba.unsa.etf.nbp24t1.entity.NbpUserEntity;
 import ba.unsa.etf.nbp24t1.exception.AlreadyExistsException;
 import ba.unsa.etf.nbp24t1.exception.NotFoundException;
-import ba.unsa.etf.nbp24t1.model.User;
+import ba.unsa.etf.nbp24t1.model.NbpUser;
 import ba.unsa.etf.nbp24t1.service.NbpUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,17 +31,17 @@ public class NbpUserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> insert(@RequestBody @Valid User user) {
+    public ResponseEntity<?> insert(@RequestBody @Valid NbpUser nbpUser) {
         return handleResponse(() -> {
-            nbpUserService.add(user);
-            return String.format("User with email %s successfully added.", user.getEmail());
+            nbpUserService.add(nbpUser);
+            return String.format("User with email %s successfully added.", nbpUser.getEmail());
         });
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid User user) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid NbpUser nbpUser) {
         return handleResponse(() -> {
-            nbpUserService.update(id, user);
+            nbpUserService.update(id, nbpUser);
             return String.format("User with id %d successfully updated.", id);
         });
     }

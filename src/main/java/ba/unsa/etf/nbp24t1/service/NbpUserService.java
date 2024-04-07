@@ -1,7 +1,7 @@
 package ba.unsa.etf.nbp24t1.service;
 
 import ba.unsa.etf.nbp24t1.entity.NbpUserEntity;
-import ba.unsa.etf.nbp24t1.model.User;
+import ba.unsa.etf.nbp24t1.model.NbpUser;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ public interface NbpUserService {
 
     NbpUserEntity getById(Long id);
 
-    void add(User user);
+    void add(NbpUser nbpUser);
 
-    void update(Long id, User user);
+    void update(Long id, NbpUser nbpUser);
 
     void delete(Long id);
 }
