@@ -77,9 +77,6 @@ function AppbarUser() {
               <MenuItem onClick={handleCloseNavMenu} component={Link} to="/aboutUsUser">
                 <Typography textAlign="center">O nama</Typography>
               </MenuItem>
-              {/* <MenuItem onClick={handleCloseNavMenu} component={Link} to="/forYou">
-                <Typography textAlign="center">Preporučeni filmovi</Typography>
-              </MenuItem> */}
             </Menu>
           </Box>
 
@@ -93,9 +90,6 @@ function AppbarUser() {
             <Button onClick={handleCloseNavMenu} component={Link} to="/aboutUsUser" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
               O nama
             </Button>
-            {/* <Button onClick={handleCloseNavMenu} component={Link} to="/forYou" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
-              Preporučeni filmovi
-            </Button> */}
           </Box>
           <Box style={{ display: "flex" }}>
             <Button onClick={handleCloseNavMenu} component={Link} to="/profile" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
