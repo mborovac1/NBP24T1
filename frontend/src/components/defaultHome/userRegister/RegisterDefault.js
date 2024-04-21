@@ -139,6 +139,12 @@ function RegisterDefault() {
       const email = inputEmail.current.value;
       const password = document.getElementById("password").value;
       const datumRodjenja = document.getElementById("datumRodjenja").value;
+      
+      const grad = document.getElementById("grad").value;
+      const username = document.getElementById("username").value;
+      const adresa = document.getElementById("adresa").value;
+      const zipKod = document.getElementById("zipKod").value;
+
       const brojTelefona = document.getElementById("brojTelefona").value;
       const spol = document.getElementById("spol").value;
       const role = "USER"; // since role is always "USER"
@@ -155,7 +161,11 @@ function RegisterDefault() {
           email: email,
           datumRodjenja: datumRodjenja,
           brojTelefona: brojTelefona,
+          username: username,
           password: password,
+          cityName: grad,
+          addressName: adresa,
+          postcode: zipKod,
           spol: spol,
           role: role,
         }),
@@ -234,6 +244,20 @@ function RegisterDefault() {
         <div className="input-container-register">
           <input className={`input-field-register ${selectedOption === "brojTelefona" && "error-field"}`} type="text" id="brojTelefona" placeholder="Broj telefona" />
         </div>
+
+        <div className="input-container-register">
+          <input className={`input-field-register ${selectedOption === "grad" && "error-field"}`} type="text" id="grad" placeholder="Grad" />
+        </div>
+        <div className="input-container-register">
+          <input className={`input-field-register ${selectedOption === "username" && "error-field"}`} type="text" id="username" placeholder="Username" />
+        </div>
+        <div className="input-container-register">
+          <input className={`input-field-register ${selectedOption === "adresa" && "error-field"}`} type="text" id="adresa" placeholder="Adresa" />
+        </div>
+        <div className="input-container-register">
+          <input className={`input-field-register ${selectedOption === "zipKod" && "error-field"}`} type="text" id="zipKod" placeholder="ZIP kod" />
+        </div>
+
         <div className="input-container-register">
           <input className={`input-field-register ${selectedOption === "spol" && "error-field"}`} type="text" id="spol" placeholder="Spol" />
         </div>

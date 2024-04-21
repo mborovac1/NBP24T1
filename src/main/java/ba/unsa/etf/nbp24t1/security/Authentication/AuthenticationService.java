@@ -142,36 +142,44 @@ public class AuthenticationService {
             throw new NotFoundException("Email adresa je već u upotrebi");
         }
 
+        var user = User.builder()
+                .ime(request.getIme())
+                .prezime(request.getPrezime())
+                .datumRodjenja(request.getDatumRodjenja())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .brojTelefona(request.getBrojTelefona())
+                .spol(request.getSpol())
+                .role(request.getRole())
+                .build();
 
-//        var user = User.builder()
-//                .ime(request.getIme())
-//                .prezime(request.getPrezime())
-//                .datumRodjenja(request.getDatumRodjenja())
-//                .email(request.getEmail())
-//                .password(passwordEncoder.encode(request.getPassword()))
-//                .brojTelefona(request.getBrojTelefona())
-//                .spol(request.getSpol())
-//                .role(request.getRole())
-//                .build();
+        System.out.println(user + " sadadasdadasddasda");
+
+        var savedUser = userRepository.save(user);
 
         var newCity = new CityEntity();
         Optional<CityEntity> existingCity = cityRepository.findByName(request.getCityName());
+        //Optional<CityEntity> existingCity = cityRepository.findByName("Sarajevo");
         if (existingCity.isPresent()) {
             newCity = existingCity.get();
         }
         else {
+//            newCity.setName("Sarajevo");
+//            newCity.setPostcode(71000);
             newCity.setName(request.getCityName());
             newCity.setPostcode(request.getPostcode());
             cityRepository.save(newCity);
         }
 
         var newAddress = new AddressEntity();
+        //Optional<AddressEntity> existingAddress = addressRepository.findByName("Đoke Mazalica 2");
         Optional<AddressEntity> existingAddress = addressRepository.findByName(request.getAddressName());
         if (existingAddress.isPresent()) {
             newAddress = existingAddress.get();
         }
         else {
-            newAddress.setName(request.getCityName());
+            //newAddress.setName("Sarajevo");
+            newAddress.setName(request.getAddressName());
             newAddress.setCityId(newCity.getId());
             addressRepository.save(newAddress);
         }
@@ -195,35 +203,12 @@ public class AuthenticationService {
 
         var saveCinemaUser = cinemaUserRepository.save(cinemaUser);
 
-        var jwtToken = jwtService.generateToken(nbpUser);
-        var refreshToken = jwtService.generateRefreshToken(nbpUser);
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
 
-        //var savedUser = userRepository.save(user);
+         saveUserToken(user, jwtToken);
 
-//        var jwtToken = jwtService.generateToken(user);
-//        var refreshToken = jwtService.generateRefreshToken(user);
-
-        // saveUserToken(cinemaUser, jwtToken); ORIGINAL
-
-        var restUser = new User();
-        restUser.setIme(request.getIme());
-        restUser.setPrezime(request.getPrezime());
-        restUser.setDatumRodjenja(request.getDatumRodjenja());
-        restUser.setBrojTelefona(request.getBrojTelefona());
-        restUser.setEmail(request.getEmail());
-        restUser.setRole(Role.USER);
-        restUser.setSpol(request.getSpol());
-
-        //var token = tokenRepository.findAllValidTokenByUser(user.getID()).get(0).token; ORIGINAL
-        var token = tokenRepository.findAllValidTokenByUser(1).get(0).token;  //DUMMY DA ERROR NESTANE
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer " + token);
-        HttpEntity<User> headerForRest = new HttpEntity<>(restUser, headers);
-        //restTemplate.postForObject("http://preporucivanje-sadrzaja-pogodnosti/korisnici/dodaj", headerForRest, User.class);
-        //restTemplate.postForObject("http://rezervacija-karata/dodajKorisnika", headerForRest, User.class);
-
-        //GrpcClient.log(user.getId(),"AuthService","register","Success");
+        var token = tokenRepository.findAllValidTokenByUser(user.getID()).get(0).token;
 
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
@@ -316,8 +301,6 @@ public class AuthenticationService {
 
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
-
-        //GrpcClient.log(user.getId(),"AuthService","authenticate","Success");
 
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
