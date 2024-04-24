@@ -14,28 +14,43 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
-@Data
-@Builder
+@Entity
+@Table(name = "_user", schema = "NBP24T1")
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "_user")
+@Data
+@Builder
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer ID;
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "first_name")
     private String ime;
+
+    @Column(name = "last_name")
     private String prezime;
 
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "username", unique = true)
+    private String username;
+
+    @Column(name = "phone_number", length = 20)
+    private String brojTelefona;
+
+    @Column(name = "birth_date")
     @JsonFormat(pattern = "dd.MM.yyyy.")
     private LocalDate datumRodjenja;
 
-    private String brojTelefona;
-
-    private String email;
-    private String password;
-
-    private String spol;
+    @Column(name = "address_id")
+    private Long addressId;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -77,19 +92,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-
-    @Override
-    public String toString() {
-        return "{" +
-                //"\"id\":\"" + ID + "\"," +
-                "\"ime\":\"" + ime + "\"," +
-                "\"prezime\":\"" + prezime + "\"," +
-                "\"datumRodjenja\":" + datumRodjenja + "," +
-                "\"brojTelefona\":\"" + brojTelefona + "\"," +
-                "\"spol\":\"" + spol + "\"," +
-                "\"email\":\"" + email + "\"" +
-                "}";
     }
 }

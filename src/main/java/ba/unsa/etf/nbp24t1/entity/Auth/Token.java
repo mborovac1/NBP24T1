@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@Table(name = "TOKEN", schema = "NBP24T1")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

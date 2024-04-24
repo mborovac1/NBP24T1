@@ -1,41 +1,42 @@
-#server:
-#  port: 8080
-#
-#spring:
-#  application:
-#    name: NBP24T1
-#  datasource:
-#    url: jdbc:oracle:thin:@ora-02.db.lab.etf.unsa.ba:1521:ETFDB
-#    username: NBP24T1
-#    password: w44LPi8o
-#    driver-class-name: oracle.jdbc.driver.OracleDriver
-#  jpa:
-#    show-sql: true
-#    hibernate:
-#      naming:
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-#    properties:
-#      hibernate:
-#        format_sql: true
-#
-#springdoc:
-#  paths-to-match: /api/**
-
 server:
   port: 8080
 
 spring:
   application:
-    name: AdvancedDatabaseSystems_Project
+    name: NBP24T1
   datasource:
-    url: jdbc:mysql://localhost:3306/ads_project
-    username: root
-    password: 12345678
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:oracle:thin:@ora-02.db.lab.etf.unsa.ba:1521:ETFDB
+    username: NBP24T1
+    password: w44LPi8o
+    driver-class-name: oracle.jdbc.driver.OracleDriver
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+#      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
         format_sql: true
+
+springdoc:
+  paths-to-match: /api/**
+
+#server:
+#  port: 8080
+#
+#spring:
+#  application:
+#    name: AdvancedDatabaseSystems_Project
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/ads_project
+#    username: root
+#    password: 12345678
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        format_sql: true

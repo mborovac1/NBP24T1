@@ -50,7 +50,6 @@ public class UserService {
                     .email("cineadmin@gmail.com")
                     .password(passwordEncoder.encode("12345"))
                     .brojTelefona("062646331")
-                    .spol("M")
                     .role(Role.ADMIN)
                     .build();
 

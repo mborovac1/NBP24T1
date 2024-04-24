@@ -149,7 +149,6 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .brojTelefona(request.getBrojTelefona())
-                .spol(request.getSpol())
                 .role(request.getRole())
                 .build();
 
@@ -208,7 +207,7 @@ public class AuthenticationService {
 
          saveUserToken(user, jwtToken);
 
-        var token = tokenRepository.findAllValidTokenByUser(user.getID()).get(0).token;
+        var token = tokenRepository.findAllValidTokenByUser(Math.toIntExact(user.getId())).get(0).token;
 
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
@@ -230,7 +229,6 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .brojTelefona(request.getBrojTelefona())
-                .spol(request.getSpol())
                 .role(request.getRole())
                 .build();
 
@@ -250,20 +248,19 @@ public class AuthenticationService {
 
 //        saveUserToken(savedUser, jwtToken);
 
-        var restUser = new User();
-        restUser.setIme(request.getIme());
-        restUser.setPrezime(request.getPrezime());
-        restUser.setDatumRodjenja(request.getDatumRodjenja());
-        restUser.setBrojTelefona(request.getBrojTelefona());
-        restUser.setEmail(request.getEmail());
-        restUser.setRole(Role.USER);
-        restUser.setSpol(request.getSpol());
-
-        var token = tokenRepository.findAllValidTokenByUser(user.getID()).get(0).token;
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer " + token);
-        HttpEntity<User> headerForRest = new HttpEntity<>(restUser, headers);
+//        var restUser = new User();
+//        restUser.setIme(request.getIme());
+//        restUser.setPrezime(request.getPrezime());
+//        restUser.setDatumRodjenja(request.getDatumRodjenja());
+//        restUser.setBrojTelefona(request.getBrojTelefona());
+//        restUser.setEmail(request.getEmail());
+//        restUser.setRole(Role.USER);
+//
+//        var token = tokenRepository.findAllValidTokenByUser(user.getId()).get(0).token;
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.add("Authorization", "Bearer " + token);
+//        HttpEntity<User> headerForRest = new HttpEntity<>(restUser, headers);
         //restTemplate.postForObject("http://preporucivanje-sadrzaja-pogodnosti/korisnici/dodaj", headerForRest, User.class);
         //restTemplate.postForObject("http://rezervacija-karata/dodajKorisnika", headerForRest, User.class);
 
@@ -309,7 +306,7 @@ public class AuthenticationService {
     }
 
     private void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getID());
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(Math.toIntExact(user.getId()));
 
         if (validUserTokens.isEmpty())
             return;
