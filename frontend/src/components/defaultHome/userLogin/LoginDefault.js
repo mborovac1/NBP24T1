@@ -123,7 +123,7 @@ function LoginDefault() {
   };
 
   const handleResetPassword = async () => {
-    const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8081";
+    const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
 
     try {
       const response = await fetch(`${BASE_URL}/auth/forgot-password/${emailReset}`, {

@@ -18,6 +18,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,9 +30,6 @@ import java.security.SecureRandom;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.mail.SimpleMailMessage;
-//import org.springframework.mail.javamail.JavaMailSender;
-//import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -45,8 +44,9 @@ public class AuthenticationService {
     private final NbpUserRepository nbpUserRepository;
 
     private final CinemaUserRepository cinemaUserRepository;
-//    @Autowired
-//    private JavaMailSender javaMailSender;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     public static String generateRandomPassword(int length) {
         if (length < 3) {
@@ -77,58 +77,85 @@ public class AuthenticationService {
         return password.toString();
     }
 
-//    public ResponseEntity<String> sendPasswordViaEmail(String email) {
-//        try {
-//            var user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found"));
-//
-//            String randomPassword = generateRandomPassword(16);
-//            // Send the email with user information
-//            sendPasswordEmail(user.getEmail(), randomPassword);
-//            user.setPassword(passwordEncoder.encode(randomPassword));
-//            userRepository.save(user);
-//
-//            return ResponseEntity.ok("Password sent successfully");
-//        } catch (NotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-//        }
-//    }
+    public ResponseEntity<String> sendPasswordViaEmail(String email) {
+        try {
+            var user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found"));
+            var nbpUser = nbpUserRepository.findByEmail(email);
 
-//    private void sendPasswordEmail(String email, String randomPassword) {
-//
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(email);
-//        message.setSubject("Cineflexx - zaboravljeni password");
-//        message.setText("Vaša email adresa: " + email + "\nVaš privremeni password: " + randomPassword + "\n\n" + "Molimo Vas promijenite šifru nakon što se prijavite na stranicu!");
-//
-//        // Send the email
-//        javaMailSender.send(message);
-//    }
+            if(nbpUser == null){
+                throw new NotFoundException("User not found");
+            }
 
-//    public ResponseEntity<String> resetPassword(String email, String oldPassword, String newPassword) {
-//        try {
-//            var user = userRepository.findByEmail(email).orElseThrow(() -> new NePostojiException("User not found"));
-//
-//            if (!passwordEncoder.matches(oldPassword, user.getPassword()))
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong current password!");
-//
-//            user.setPassword(passwordEncoder.encode(newPassword));
-//            userRepository.save(user);
-//            return ResponseEntity.ok("Password reset successfully");
-//        } catch (NePostojiException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-//        }
-//    }
+            String randomPassword = generateRandomPassword(16);
+            // Send the email with user information
+            sendPasswordEmail(user.getEmail(), randomPassword);
+
+            nbpUser.setPassword(passwordEncoder.encode(randomPassword));
+            user.setPassword(passwordEncoder.encode(randomPassword));
+
+            nbpUserRepository.save(nbpUser);
+            userRepository.save(user);
+
+            return ResponseEntity.ok("Password sent successfully");
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
+    private void sendPasswordEmail(String email, String randomPassword) {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Cineflexx - zaboravljeni password");
+        message.setText("Vaša email adresa: " + email + "\nVaš privremeni password: " + randomPassword + "\n\n" + "Molimo Vas promijenite šifru nakon što se prijavite na stranicu!");
+
+        // Send the email
+        javaMailSender.send(message);
+    }
+
+    public ResponseEntity<String> resetPassword(String email, String oldPassword, String newPassword) {
+        try {
+            var user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found"));
+            var nbpUser = nbpUserRepository.findByEmail(email);
+
+            if(nbpUser == null){
+                throw new NotFoundException("User not found");
+            }
+
+            if (!passwordEncoder.matches(oldPassword, user.getPassword()))
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong current password!");
+
+            user.setPassword(passwordEncoder.encode(newPassword));
+            nbpUser.setPassword(passwordEncoder.encode(newPassword));
+
+            userRepository.save(user);
+            nbpUserRepository.save(nbpUser);
+
+            return ResponseEntity.ok("Password reset successfully");
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
 
     public ResponseEntity<String> resetPassword(Reset request) {
         try {
             var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new NotFoundException("User not found"));
+            var nbpUser = nbpUserRepository.findByEmail(request.getEmail());
+
+            if(nbpUser == null){
+                throw new NotFoundException("User not found");
+            }
 
             if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong current password!");
             }
 
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            nbpUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+            nbpUserRepository.save(nbpUser);
             userRepository.save(user);
+
             return ResponseEntity.ok("Password reset successfully");
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
