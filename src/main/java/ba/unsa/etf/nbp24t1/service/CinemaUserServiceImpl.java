@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +26,18 @@ public class CinemaUserServiceImpl implements CinemaUserService {
     @Override
     public List<CinemaUserEntity> getAll() {
         return cinemaUserRepository.findAll();
+    }
+
+    public List<NbpUserEntity> getAllUsers() {
+        List<CinemaUserEntity> cinemaUsers = cinemaUserRepository.findAll();
+        List<NbpUserEntity> finalUsers = new ArrayList<>();
+
+        for (CinemaUserEntity cinemaUser : cinemaUsers) {
+            Optional<NbpUserEntity> userOptional = nbpUserRepository.findById(cinemaUser.getUserId());
+            userOptional.ifPresent(finalUsers::add);
+        }
+
+        return finalUsers;
     }
 
     @Override

@@ -9,4 +9,5 @@ public interface NbpUserRepository extends JpaRepository<NbpUserEntity, Long> {
 
     Boolean existsByEmail(String name);
     NbpUserEntity findByEmail(String email);
+    NbpUserEntity findById(int id);
 }

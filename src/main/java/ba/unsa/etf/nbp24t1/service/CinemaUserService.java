@@ -9,6 +9,7 @@ import java.util.List;
 public interface CinemaUserService {
 
     List<CinemaUserEntity> getAll();
+    List<NbpUserEntity> getAllUsers();
     ResponseEntity getKorisnikByEmail(String email);
     //ResponseEntity getAddressById(int id);
 
