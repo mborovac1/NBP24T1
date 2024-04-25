@@ -6,19 +6,31 @@ import "./Profile.css";
 
 const Profile = () => {
   const [user, setUser] = useState({});
+  const [address, setAddress] = useState({});
   const email = localStorage.getItem("email");
 
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("access_token");
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
-        const response = await axios.get(`${BASE_URL}/user/email/${email}`, {
+        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemaUsers";
+        const response = await axios.get(`${BASE_URL}/user/${email}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log("RESPONSE", response.data);
         setUser(response.data);
+
+        //Address name
+        const addressId = response.data.addressId;
+        console.log("ADDRES ID:", addressId);
+        const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/addresses";
+        const addressResponse = await axios.get(`${BASE_URL_ADDRESS}/address/${addressId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("ADDRESS RESPONSE", addressResponse.data);
+        setAddress(addressResponse.data);
       } catch (error) {
-        console.error("Failed to fetch users:", error);
+        console.error("Failed to fetch user or address:", error);
       }
     };
     fetchUser();
@@ -76,7 +88,7 @@ const Profile = () => {
               variant="filled"
               disabled
               fullWidth
-              value={user.ime}
+              value={user.firstName}
               InputProps={{
                 style: {
                   fontWeight: "bold",
@@ -107,7 +119,7 @@ const Profile = () => {
               variant="filled"
               disabled
               fullWidth
-              value={user.prezime}
+              value={user.lastName}
               InputProps={{
                 style: {
                   fontWeight: "bold",
@@ -138,7 +150,7 @@ const Profile = () => {
               variant="filled"
               disabled
               fullWidth
-              value={user.datumRodjenja}
+              value={user.birthDate}
               InputProps={{
                 style: {
                   fontWeight: "bold",
@@ -200,7 +212,7 @@ const Profile = () => {
               variant="filled"
               disabled
               fullWidth
-              value={user.brojTelefona}
+              value={user.phoneNumber}
               InputProps={{
                 style: {
                   fontWeight: "bold",
@@ -225,13 +237,13 @@ const Profile = () => {
                 whiteSpace: "nowrap",
               }}
             >
-              Spol:
+              Adresa:
             </Typography>
             <TextField
               variant="filled"
               disabled
               fullWidth
-              value={user.spol}
+              value={address.name}
               InputProps={{
                 style: {
                   fontWeight: "bold",

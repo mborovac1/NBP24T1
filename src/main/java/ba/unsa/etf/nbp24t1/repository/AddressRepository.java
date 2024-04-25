@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
 
     Optional<AddressEntity> findByName(String name);
+    AddressEntity findById(int id);
+    Boolean existsById(int id);
 }

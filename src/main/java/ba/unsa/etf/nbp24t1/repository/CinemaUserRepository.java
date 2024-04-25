@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CinemaUserRepository extends JpaRepository<CinemaUserEntity, Long> {
+    //Boolean existsByEmail(String email);
 }

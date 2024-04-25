@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface NbpUserRepository extends JpaRepository<NbpUserEntity, Long> {
 
     Boolean existsByEmail(String name);
+    NbpUserEntity findByEmail(String email);
 }
