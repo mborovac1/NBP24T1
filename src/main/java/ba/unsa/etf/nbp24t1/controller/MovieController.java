@@ -3,10 +3,8 @@ package ba.unsa.etf.nbp24t1.controller;
 import ba.unsa.etf.nbp24t1.entity.MovieEntity;
 import ba.unsa.etf.nbp24t1.service.MovieService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +19,10 @@ public class MovieController {
     @GetMapping("/")
     public List<MovieEntity> getAll() {
         return movieService.getAll();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteMovie(@PathVariable int id) {
+        return movieService.deleteMovie(id);
     }
 }

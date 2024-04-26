@@ -43,7 +43,7 @@ const Movies = () => {
     setSelectedGenres(selectedGenres.filter((selected) => selected.id !== genre.id));
   };
 
-  const filterMovies = () => {
+ /*  const filterMovies = () => {
     const filteredMovies = filmovi.filter((movie) => {
       let onlyGenres = selectedGenres.map((el) => el.id);
       const movieGenreIds = allGenres.filter((mg) => mg.movieId === movie.id).map((mg) => mg.genreId);
@@ -54,14 +54,6 @@ const Movies = () => {
             });
             return hasCommonGenre;
         }
-      //let allGenresCurr = movie.zanrovi.map((el) => el.name); //TODO
-      /* const hasCommonElement = onlyGenres.every((element) => allGenresCurr.includes(element));
-        //FIX IZNAD
-      if (selectedGenres.length > 0 && !hasCommonElement) {
-        return false;
-      } */
-
-      // Filter based on search term
       if (searchTerm !== "" && !movie.name.toLowerCase().includes(searchTerm.toLowerCase())) {
         return false;
       }
@@ -71,6 +63,26 @@ const Movies = () => {
 
     setFilteredMovies(filteredMovies);
   };
+ */
+
+  const filterMovies = () => {
+    const filteredMovies = filmovi.filter((movie) => {
+      const movieGenreIds = allGenres.filter((mg) => mg.movieId === movie.id).map((mg) => mg.genreId);
+  
+      const hasAllSelectedGenres = selectedGenres.every((selectedGenre) => {
+        return movieGenreIds.includes(selectedGenre.id);
+      });
+  
+      if (searchTerm !== "" && !movie.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+  
+      return hasAllSelectedGenres;
+    });
+  
+    setFilteredMovies(filteredMovies);
+  };
+
 
   const filteredContent = searchTerm !== "" || selectedGenres.length > 0 ? filteredMovies : filmovi;
 

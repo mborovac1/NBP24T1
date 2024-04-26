@@ -11,6 +11,7 @@ const MoviesUser = () => {
   const [filmovi, setFilmovi] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [allGenres, setAllGenres] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredMovies, setFilteredMovies] = useState([]);
 
@@ -28,6 +29,13 @@ const MoviesUser = () => {
         console.error("Failed to fetch movies:", error);
       }
     };
+
+    fetch("http://localhost:8080/api/movieGenres/")
+    .then((res) => res.json())
+    .then((result) => {
+      console.log(result);
+      setAllGenres(result);
+    });
 
     fetchFilmovi();
     filterMovies();
@@ -47,7 +55,7 @@ const MoviesUser = () => {
     );
   };
 
-  const filterMovies = () => {
+/*   const filterMovies = () => {
     const filteredMovies = filmovi.filter((movie) => {
       // Filter based on selected genres
       let onlyGenres = selectedGenres.map((el) => el.name);
@@ -70,6 +78,24 @@ const MoviesUser = () => {
       return true;
     });
 
+    setFilteredMovies(filteredMovies);
+  }; */
+
+  const filterMovies = () => {
+    const filteredMovies = filmovi.filter((movie) => {
+      const movieGenreIds = allGenres.filter((mg) => mg.movieId === movie.id).map((mg) => mg.genreId);
+  
+      const hasAllSelectedGenres = selectedGenres.every((selectedGenre) => {
+        return movieGenreIds.includes(selectedGenre.id);
+      });
+  
+      if (searchTerm !== "" && !movie.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+  
+      return hasAllSelectedGenres;
+    });
+  
     setFilteredMovies(filteredMovies);
   };
 

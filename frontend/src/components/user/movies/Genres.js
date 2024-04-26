@@ -23,6 +23,7 @@ const Genres = ({ selectedGenres, setSelectedGenres, genres, setGenres, onGenreS
         const response = await axios.get(`${BASE_URL}/api/genres/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log(response.data);
         setGenres(response.data);
       } catch (error) {
         console.error("Failed to fetch movies:", error);
@@ -31,18 +32,18 @@ const Genres = ({ selectedGenres, setSelectedGenres, genres, setGenres, onGenreS
 
     fetchZanrovi();
 
-    return () => {
+/*     return () => {
       setGenres([]);
-    };
+    }; */
   }, []);
 
   return (
     <div style={{ padding: "6px 0" }}>
       {selectedGenres.map((genre) => (
-        <Chip style={{ margin: 2, backgroundColor: "black", color: "white", fontSize: "16px", padding: "5px" }} label={genre.nazivZanra} key={genre.id} color="primary" clickable onDelete={() => handleRemove(genre)} />
+        <Chip style={{ margin: 2, backgroundColor: "black", color: "white", fontSize: "16px", padding: "5px" }} label={genre.name} key={genre.id} color="primary" clickable onDelete={() => handleRemove(genre)} />
       ))}
       {genres.map((genre) => (
-        <Chip style={{ margin: 2, backgroundColor: "white", color: "black", fontSize: "16px", padding: "5px" }} label={genre.nazivZanra} key={genre.id} clickable size="small" onClick={() => handleAdd(genre)} />
+        <Chip style={{ margin: 2, backgroundColor: "white", color: "black", fontSize: "16px", padding: "5px" }} label={genre.name} key={genre.id} clickable size="small" onClick={() => handleAdd(genre)} />
       ))}
     </div>
   );
