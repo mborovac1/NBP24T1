@@ -10,4 +10,6 @@ public interface MovieService {
     List<MovieEntity> getAll();
 
     ResponseEntity deleteMovie(int id);
+
+    ResponseEntity addMovie(MovieEntity movie);
 }

@@ -21,6 +21,11 @@ public class MovieController {
         return movieService.getAll();
     }
 
+    @PostMapping("/add")
+    public ResponseEntity addMovie(@RequestBody MovieEntity movie) {
+        return movieService.addMovie(movie);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteMovie(@PathVariable int id) {
         return movieService.deleteMovie(id);

@@ -5,9 +5,9 @@ import axios from "axios";
 export default function AddMovie() {
   const paperStyle = { padding: "50px 20px", width: 600, margin: "20px auto" };
 
-  const [nazivFilma, setNazivFilma] = useState("");
-  const [trajanje, setTrajanje] = useState("");
-  const [opis, setOpis] = useState("");
+  const [name, setName] = useState("");
+  const [duration, setDuration] = useState("");
+  const [description, setDescription] = useState("");
   const [posterPath, setPosterPath] = useState("");
   const [zanrovi, setZanrovi] = useState([]);
   const [sale, setSale] = useState([]);
@@ -38,24 +38,35 @@ export default function AddMovie() {
 
   const handleClick = async (e) => {
     const film = {
-      nazivFilma,
-      trajanje,
-      opis,
+      name,
+      duration,
+      description,
       posterPath,
     };
 
     const token = localStorage.getItem("access_token");
     try {
       const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
-      const response = await axios.post(`${BASE_URL}/dodajFilm`, film, {
-        headers: { Authorization: `Bearer ${token}` },
+       const response = await axios.post(`${BASE_URL}/api/movies/add`, film, {
+        headers: { Authorization: `Bearer ${token}` }, 
       });
 
       let zahtjevZanrovi = selectedZanrovi.map((zanr) => ({
         id: zanr.id,
         nazivZanra: zanr.nazivZanra,
       }));
-      const response2 = await axios.put(`${BASE_URL}/sale/movie/${response.data.id}`, selectedSale, {
+
+      let movieGenreMappings = [];
+
+    zahtjevZanrovi.forEach((zanr) => {
+        movieGenreMappings.push({ movieId: response.data.id, genreId: zanr.id });
+    });
+
+    const response1 =await axios.post(`${BASE_URL}/api/movieGenres/add`, movieGenreMappings, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      /* const response2 = await axios.put(`${BASE_URL}/sale/movie/${response.data.id}`, selectedSale, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -67,7 +78,7 @@ export default function AddMovie() {
         {
           headers: { Authorization: `Bearer ${token}` },
         }
-      );
+      ); */
 
       if (response.ok || response.status === 201) {
         setReservationSuccess(true);
@@ -84,7 +95,7 @@ export default function AddMovie() {
       const token = localStorage.getItem("access_token");
       try {
         const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
-        const response = await axios.get(`${BASE_URL}/movies`, {
+        const response = await axios.get(`${BASE_URL}/api/movies/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setFilmovi(response.data);
@@ -97,12 +108,12 @@ export default function AddMovie() {
       const token = localStorage.getItem("access_token");
       try {
         const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
-        const response = await axios.get(`${BASE_URL}/genres/`, {
+        const response = await axios.get(`${BASE_URL}/api/genres/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const updatedZanrovi = response.data.map((zanr) => ({
           id: zanr.id,
-          nazivZanra: zanr.nazivZanra,
+          nazivZanra: zanr.name,
         }));
         setZanrovi(updatedZanrovi);
       } catch (error) {
@@ -159,8 +170,8 @@ export default function AddMovie() {
             id="outlined-basic"
             label="Naziv filma"
             variant="outlined"
-            value={nazivFilma}
-            onChange={(e) => setNazivFilma(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             fullWidth
             InputLabelProps={{
               style: { fontWeight: "bold" },
@@ -173,8 +184,8 @@ export default function AddMovie() {
             id="outlined-basic"
             label="Trajanje"
             variant="outlined"
-            value={trajanje}
-            onChange={(e) => setTrajanje(e.target.value)}
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
             fullWidth
             InputLabelProps={{
               style: { fontWeight: "bold" },
@@ -187,8 +198,8 @@ export default function AddMovie() {
             id="outlined-basic"
             label="Opis"
             variant="outlined"
-            value={opis}
-            onChange={(e) => setOpis(e.target.value)}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             fullWidth
             InputLabelProps={{
               style: { fontWeight: "bold" },

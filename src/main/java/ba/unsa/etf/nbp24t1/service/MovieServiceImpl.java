@@ -8,8 +8,7 @@ import ba.unsa.etf.nbp24t1.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,5 +50,23 @@ public class MovieServiceImpl implements MovieService {
         } else {
             throw new NotFoundException("Movie with Id " + id + " does not exist!");
         }
+    }
+
+    @Override
+    public ResponseEntity addMovie(MovieEntity movie) {
+        movieRepository.save(movie);
+
+        JSONObject objekat = new JSONObject();
+        try {
+            objekat.put("message", "Movie has been added successfully!");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<MovieEntity> request = new HttpEntity<>(movie, headers);
+
+
+        return new ResponseEntity(movie, HttpStatus.CREATED);
     }
 }
