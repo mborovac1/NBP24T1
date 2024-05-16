@@ -30,7 +30,7 @@ function AppbarAdmin() {
     const email = localStorage.getItem("email");
 
     await axios.post(`${BASE_URL}/auth/logout/${email}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     localStorage.removeItem("access_token");
@@ -82,8 +82,8 @@ function AppbarAdmin() {
               <MenuItem onClick={handleCloseNavMenu} component={Link} to="/overviewMovies">
                 <Typography textAlign="center">Pregled filmova</Typography>
               </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu} component={Link} to="/addUser">
-                <Typography textAlign="center">Dodavanje korisnika</Typography>
+              <MenuItem onClick={handleCloseNavMenu} component={Link} to="/overviewMembership">
+                <Typography textAlign="center">Upravljanje članarinama</Typography>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu} component={Link} to="/overviewUser">
                 <Typography textAlign="center">Pregled korisnika</Typography>
@@ -125,8 +125,8 @@ function AppbarAdmin() {
               Pregled filmova
             </Button>
 
-            <Button onClick={handleCloseNavMenu} component={Link} to="/addUser" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
-              Dodavanje korisnika
+            <Button onClick={handleCloseNavMenu} component={Link} to="/membershipOverview" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
+              Upravljanje članarinama
             </Button>
 
             <Button onClick={handleCloseNavMenu} component={Link} to="/overviewUser" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>

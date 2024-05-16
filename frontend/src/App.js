@@ -5,6 +5,7 @@ import HomeAdmin from "./components/admin/home/HomeAdmin";
 import HomeOverviewUser from "./components/admin/overviewUser/HomeOverviewUser";
 
 import HomeAddMovie from "./components/admin/addMovie/HomeAddMovie";
+import HomeOverviewMembership from "./components/admin/overviewMembership/HomeOverviewMembership";
 import HomeEventsAdmin from "./components/admin/events/HomeEventsAdmin";
 import HomeAboutUsAdmin from "./components/admin/aboutUs/HomeAboutUsAdmin";
 import HomeLoginDefault from "./components/defaultHome/userLogin/HomeLoginDefault";
@@ -50,6 +51,7 @@ function App() {
           <Route path="/overviewMovies" element={<HomeOverviewMovies />} />
           <Route path="/addMovie" element={<HomeAddMovie />} />
           <Route path="/addUser" element={<HomeAddUser />} />
+          <Route path="/membershipOverview" element={<HomeOverviewMembership />} />
 
           <Route path="/login" element={<HomeLoginDefault />} />
           <Route path="/register" element={<HomeRegisterDefault />} />

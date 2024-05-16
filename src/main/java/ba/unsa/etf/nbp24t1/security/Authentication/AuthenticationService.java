@@ -1,17 +1,11 @@
 package ba.unsa.etf.nbp24t1.security.Authentication;
 
-import ba.unsa.etf.nbp24t1.entity.AddressEntity;
+import ba.unsa.etf.nbp24t1.entity.*;
 import ba.unsa.etf.nbp24t1.entity.Auth.*;
-import ba.unsa.etf.nbp24t1.entity.CinemaUserEntity;
-import ba.unsa.etf.nbp24t1.entity.CityEntity;
-import ba.unsa.etf.nbp24t1.entity.NbpUserEntity;
 import ba.unsa.etf.nbp24t1.exception.NotFoundException;
-import ba.unsa.etf.nbp24t1.repository.AddressRepository;
+import ba.unsa.etf.nbp24t1.repository.*;
 import ba.unsa.etf.nbp24t1.repository.Auth.TokenRepository;
 import ba.unsa.etf.nbp24t1.repository.Auth.UserRepository;
-import ba.unsa.etf.nbp24t1.repository.CinemaUserRepository;
-import ba.unsa.etf.nbp24t1.repository.CityRepository;
-import ba.unsa.etf.nbp24t1.repository.NbpUserRepository;
 import ba.unsa.etf.nbp24t1.security.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +39,7 @@ public class AuthenticationService {
     private final NbpUserRepository nbpUserRepository;
 
     private final CinemaUserRepository cinemaUserRepository;
+    private final MembershipRepository membershipRepository;
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -225,7 +221,13 @@ public class AuthenticationService {
 
         var cinemaUser = new CinemaUserEntity();
         cinemaUser.setUserId(nbpUser.getId());
-        cinemaUser.setMembershipId(null); //empty in beginning
+        MembershipEntity userMembership = MembershipEntity.builder()
+                .discount(10.0)
+                .expiryDate(LocalDate.of(2024, 12, 31))
+                .type(MembershipType.STANDARD)
+                .build();
+        MembershipEntity savedMembership = membershipRepository.save(userMembership);
+        cinemaUser.setMembershipId(savedMembership.getId()); //empty in beginning
 
         var saveCinemaUser = cinemaUserRepository.save(cinemaUser);
 

@@ -37,6 +37,7 @@ public class MembershipEntity {
     private LocalDate expiryDate;
 
     @NotBlank(message = "Membership type must exist.")
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 50)
-    private String type;
+    private MembershipType type;
 }

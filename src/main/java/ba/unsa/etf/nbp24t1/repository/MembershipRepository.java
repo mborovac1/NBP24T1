@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface MembershipRepository extends JpaRepository<MembershipEntity, Long> {
 
     Optional<MembershipEntity> findByType(String type);
+    MembershipEntity findById(int id);
+    Boolean existsById(int id);
 }
