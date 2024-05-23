@@ -88,6 +88,9 @@ function AppbarAdmin() {
               <MenuItem onClick={handleCloseNavMenu} component={Link} to="/overviewUser">
                 <Typography textAlign="center">Pregled korisnika</Typography>
               </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu} component={Link} to="/generateReport">
+                <Typography textAlign="center">Generiši izvještaj</Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <Typography
@@ -131,6 +134,10 @@ function AppbarAdmin() {
 
             <Button onClick={handleCloseNavMenu} component={Link} to="/overviewUser" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
               Pregled korisnika
+            </Button>
+
+            <Button onClick={handleCloseNavMenu} component={Link} to="/generateReport" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
+              Generiši izvještaj
             </Button>
           </Box>
           <Box style={{ display: "flex" }}>

@@ -126,6 +126,19 @@
             <version>20190722</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>7.1.14</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>7.1.14</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>

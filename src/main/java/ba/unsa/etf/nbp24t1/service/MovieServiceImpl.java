@@ -5,13 +5,25 @@ import ba.unsa.etf.nbp24t1.entity.MovieGenreEntity;
 import ba.unsa.etf.nbp24t1.exception.NotFoundException;
 import ba.unsa.etf.nbp24t1.repository.MovieGenreRepository;
 import ba.unsa.etf.nbp24t1.repository.MovieRepository;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,5 +82,59 @@ public class MovieServiceImpl implements MovieService {
 
 
         return new ResponseEntity(movie, HttpStatus.CREATED);
+    }
+
+
+    public List<MovieEntity> getMoviesFromLast7Days() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime sevenDaysAgo = now.minusDays(7);
+        return movieRepository.findByCreatedAtBetween(sevenDaysAgo, now);
+    }
+
+    public ByteArrayInputStream generateMoviesReportPdf() {
+        List<MovieEntity> movies = getMoviesFromLast7Days();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PdfWriter writer = new PdfWriter(out);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+
+        // Title
+        Paragraph title = new Paragraph("Movies Released in Last 7 Days")
+                .setFontSize(18)
+                .setBold()
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontColor(ColorConstants.BLUE);
+        document.add(title);
+        document.add(new Paragraph(" "));
+
+        // Table
+        float[] columnWidths = {1, 2, 1, 3, 2};
+        Table table = new Table(UnitValue.createPercentArray(columnWidths));
+        table.setWidth(UnitValue.createPercentValue(100));
+
+        // Table Header
+        table.addHeaderCell(new Cell().add(new Paragraph("ID")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addHeaderCell(new Cell().add(new Paragraph("Title")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addHeaderCell(new Cell().add(new Paragraph("Duration")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addHeaderCell(new Cell().add(new Paragraph("Description")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addHeaderCell(new Cell().add(new Paragraph("Created At")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+
+        // Date Formatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+        // Table Data
+        for (MovieEntity movie : movies) {
+            table.addCell(new Cell().add(new Paragraph(movie.getId().toString())));
+            table.addCell(new Cell().add(new Paragraph(movie.getName())));
+            table.addCell(new Cell().add(new Paragraph(movie.getDuration().toString())));
+            table.addCell(new Cell().add(new Paragraph(movie.getDescription())));
+            table.addCell(new Cell().add(new Paragraph(movie.getCreatedAt().format(formatter))));
+        }
+
+        document.add(table);
+        document.close();
+
+        return new ByteArrayInputStream(out.toByteArray());
     }
 }
