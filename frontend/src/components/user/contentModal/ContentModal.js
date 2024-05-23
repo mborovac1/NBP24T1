@@ -28,6 +28,15 @@ const style = {
   p: 4,
 };
 
+const LoadingScreen = () => {
+  return (
+    <div className="loading-screen">
+      <p>Loading, please wait...</p>
+      {/* Add a spinner or animation if desired */}
+    </div>
+  );
+};
+
 export default function ContentModal({ children, id }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -45,15 +54,10 @@ export default function ContentModal({ children, id }) {
   };
 
   const [filmovi, setFilmovi] = useState([]);
-
-  const [user, setUser] = useState({});
-  const [address, setAddress] = useState({});
-  const [openPasswordModal, setOpenPasswordModal] = useState(false);
-  const email = localStorage.getItem("email");
-  const [korisnici, setKorisnici] = useState([]);
-  const [membership, setMembership] = useState([]);
+  const [user, setUser] = useState(null);
   const [membershipName, setMembershipName] = useState("");
   const [discount, setDiscount] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchFilmovi = async () => {
@@ -69,43 +73,61 @@ export default function ContentModal({ children, id }) {
       }
     };
 
+    fetchFilmovi();
+  }, []);
+
+  useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("access_token");
       try {
         const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemaUsers";
-        const response = await axios.get(`${BASE_URL}/user/${email}`, {
+        const response = await axios.get(`${BASE_URL}/user/${localStorage.getItem("email")}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
-
-        const responseSetKorisnici = await axios.get(`${BASE_URL}/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setKorisnici(responseSetKorisnici.data);
-
-        //membership
-        for (let i = 0; i < responseSetKorisnici.data.length; i++) {
-          if (user.id == responseSetKorisnici.data[i].userId) {
-            const membershipId = responseSetKorisnici.data[i].membershipId;
-            if (membershipId != null) {
-              const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/memberships";
-              const membershipResponse = await axios.get(`${BASE_URL_ADDRESS}/membership/${membershipId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
-
-              setMembershipName(membershipResponse.data.type);
-              setDiscount(membershipResponse.data.discount);
-            }
-          }
-        }
       } catch (error) {
-        console.error("Failed to fetch user or address:", error);
+        console.error("Failed to fetch user:", error);
       }
     };
 
-    fetchFilmovi();
     fetchUser();
-  }, [discount]);
+  }, []);
+
+  useEffect(() => {
+    const fetchMembership = async () => {
+      if (!user || !user.id) return;
+
+      const token = localStorage.getItem("access_token");
+      try {
+        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemaUsers";
+        const responseSetKorisnici = await axios.get(`${BASE_URL}/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const userWithMembership = responseSetKorisnici.data.find((korisnik) => korisnik.userId === user.id);
+        if (userWithMembership && userWithMembership.membershipId) {
+          const membershipId = userWithMembership.membershipId;
+          const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/memberships";
+          const membershipResponse = await axios.get(`${BASE_URL_ADDRESS}/membership/${membershipId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          setMembershipName(membershipResponse.data.type);
+          setDiscount(membershipResponse.data.discount);
+        }
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch membership:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchMembership();
+  }, [user]);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   const currentFilm = filmovi.find((film) => film.id === id);
 

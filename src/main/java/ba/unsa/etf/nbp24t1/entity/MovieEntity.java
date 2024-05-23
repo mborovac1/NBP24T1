@@ -35,4 +35,8 @@ public class MovieEntity {
 
     @Column(name = "poster_path", nullable = false)
     private String posterPath;
+
+    @NotEmpty(message = "Movie price must exist.")
+    @Column(name = "price", nullable = false)
+    private Double price;
 }
