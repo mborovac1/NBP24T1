@@ -201,7 +201,7 @@ export default function ContentModal({ children, id }) {
                   Vaša vrsta članstva: {membershipName}
                 </Typography>
                 <Typography variant="body2" component="div">
-                  Cijena nakon ostvarenog popusta: {discount} $
+                  Cijena: <span style={{ textDecoration: "line-through" }}>{currentFilm.price} $</span> {currentFilm.price - currentFilm.price * (discount / 100)} $
                 </Typography>
               </div>
             </div>
