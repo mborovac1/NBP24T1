@@ -11,6 +11,7 @@ export default function AddMovie() {
   const [posterPath, setPosterPath] = useState("");
   const [zanrovi, setZanrovi] = useState([]);
   const [sale, setSale] = useState([]);
+  const [price, setPrice] = useState([]);
 
   const [filmovi, setFilmovi] = useState([]);
 
@@ -42,13 +43,14 @@ export default function AddMovie() {
       duration,
       description,
       posterPath,
+      price,
     };
 
     const token = localStorage.getItem("access_token");
     try {
       const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
-       const response = await axios.post(`${BASE_URL}/api/movies/add`, film, {
-        headers: { Authorization: `Bearer ${token}` }, 
+      const response = await axios.post(`${BASE_URL}/api/movies/add`, film, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       let zahtjevZanrovi = selectedZanrovi.map((zanr) => ({
@@ -58,11 +60,11 @@ export default function AddMovie() {
 
       let movieGenreMappings = [];
 
-    zahtjevZanrovi.forEach((zanr) => {
+      zahtjevZanrovi.forEach((zanr) => {
         movieGenreMappings.push({ movieId: response.data.id, genreId: zanr.id });
-    });
+      });
 
-    const response1 =await axios.post(`${BASE_URL}/api/movieGenres/add`, movieGenreMappings, {
+      const response1 = await axios.post(`${BASE_URL}/api/movieGenres/add`, movieGenreMappings, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -214,6 +216,20 @@ export default function AddMovie() {
             variant="outlined"
             value={posterPath}
             onChange={(e) => setPosterPath(e.target.value)}
+            fullWidth
+            InputLabelProps={{
+              style: { fontWeight: "bold" },
+            }}
+            InputProps={{
+              style: { fontWeight: "bold" },
+            }}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Cijena"
+            variant="outlined"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
             fullWidth
             InputLabelProps={{
               style: { fontWeight: "bold" },

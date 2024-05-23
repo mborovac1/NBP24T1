@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "MOVIE", schema = "NBP24T1")
 @NoArgsConstructor
@@ -39,4 +41,16 @@ public class MovieEntity {
     @NotEmpty(message = "Movie price must exist.")
     @Column(name = "price", nullable = false)
     private Double price;
+
+    @NotEmpty(message = "Created at must exist.")
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

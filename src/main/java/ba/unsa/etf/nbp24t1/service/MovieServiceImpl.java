@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +55,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public ResponseEntity addMovie(MovieEntity movie) {
+        movie.setCreatedAt(LocalDateTime.now());
         movieRepository.save(movie);
 
         JSONObject objekat = new JSONObject();
