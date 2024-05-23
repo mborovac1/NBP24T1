@@ -222,7 +222,7 @@ public class AuthenticationService {
         var cinemaUser = new CinemaUserEntity();
         cinemaUser.setUserId(nbpUser.getId());
         MembershipEntity userMembership = MembershipEntity.builder()
-                .discount(10.0)
+                .discount(0.0)
                 .expiryDate(LocalDate.of(2024, 12, 31))
                 .type(MembershipType.STANDARD)
                 .build();

@@ -46,6 +46,26 @@ public class MembershipServiceImpl implements MembershipService {
         if (foundMembership != null) {
             // Update the membership type
             foundMembership.setType(membershipType);
+            //foundMembership.setDiscount(0.0);
+            switch (membershipType) {
+                case STANDARD:
+                    foundMembership.setDiscount(0.0);
+                    break;
+                case STUDENT:
+                    foundMembership.setDiscount(5.0);
+                    break;
+                case GOLD:
+                    foundMembership.setDiscount(10.0);
+                    break;
+                case PLATINUM:
+                    foundMembership.setDiscount(15.0);
+                    break;
+                case VIP:
+                    foundMembership.setDiscount(20.0);
+                    break;
+                default:
+                    foundMembership.setDiscount(1.0);
+            }
 
             // Save the updated membership
             membershipRepository.save(foundMembership);

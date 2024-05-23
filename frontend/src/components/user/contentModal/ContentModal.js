@@ -46,6 +46,15 @@ export default function ContentModal({ children, id }) {
 
   const [filmovi, setFilmovi] = useState([]);
 
+  const [user, setUser] = useState({});
+  const [address, setAddress] = useState({});
+  const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  const email = localStorage.getItem("email");
+  const [korisnici, setKorisnici] = useState([]);
+  const [membership, setMembership] = useState([]);
+  const [membershipName, setMembershipName] = useState("");
+  const [discount, setDiscount] = useState("");
+
   useEffect(() => {
     const fetchFilmovi = async () => {
       const token = localStorage.getItem("access_token");
@@ -60,8 +69,43 @@ export default function ContentModal({ children, id }) {
       }
     };
 
+    const fetchUser = async () => {
+      const token = localStorage.getItem("access_token");
+      try {
+        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemaUsers";
+        const response = await axios.get(`${BASE_URL}/user/${email}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(response.data);
+
+        const responseSetKorisnici = await axios.get(`${BASE_URL}/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setKorisnici(responseSetKorisnici.data);
+
+        //membership
+        for (let i = 0; i < responseSetKorisnici.data.length; i++) {
+          if (user.id == responseSetKorisnici.data[i].userId) {
+            const membershipId = responseSetKorisnici.data[i].membershipId;
+            if (membershipId != null) {
+              const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/memberships";
+              const membershipResponse = await axios.get(`${BASE_URL_ADDRESS}/membership/${membershipId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+              });
+
+              setMembershipName(membershipResponse.data.type);
+              setDiscount(membershipResponse.data.discount);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch user or address:", error);
+      }
+    };
+
     fetchFilmovi();
-  }, []);
+    fetchUser();
+  }, [discount]);
 
   const currentFilm = filmovi.find((film) => film.id === id);
 
@@ -99,38 +143,49 @@ export default function ContentModal({ children, id }) {
               Trajanje filma: {currentFilm?.duration || ""} minuta
             </Typography>
 
-            <div style={{ display: "flex", alignItems: "center", color: "white", marginTop: "10px" }}>
-              <InputLabel htmlFor="kolicinaKarata" style={{ color: "white", marginRight: "10px" }}>
-                Odaberite broj karata:
-              </InputLabel>
-              <FormControl sx={{ m: 1, flex: "1" }}>
-                <Select
-                  style={{
-                    color: "white",
-                    width: "100%",
-                    border: "1px solid white",
-                    borderRadius: "4px",
-                    backgroundColor: "transparent",
-                  }}
-                  value={kolicinaKarata}
-                  onChange={handleChange}
-                  displayEmpty
-                  inputProps={{ "aria-label": "1" }}
-                  id="kolicinaKarata"
-                >
-                  <MenuItem value="">
-                    <em></em>
-                  </MenuItem>
-                  <MenuItem value={1}>1</MenuItem>
-                  <MenuItem value={2}>2</MenuItem>
-                  <MenuItem value={3}>3</MenuItem>
-                  <MenuItem value={4}>4</MenuItem>
-                  <MenuItem value={5}>5</MenuItem>
-                </Select>
-              </FormControl>
+            <div style={{ color: "white", marginTop: "10px" }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <InputLabel htmlFor="kolicinaKarata" style={{ color: "white", marginRight: "10px" }}>
+                  Odaberite broj karata:
+                </InputLabel>
+                <FormControl sx={{ m: 1, flex: "1" }}>
+                  <Select
+                    style={{
+                      color: "white",
+                      width: "100%",
+                      border: "1px solid white",
+                      borderRadius: "4px",
+                      backgroundColor: "transparent",
+                    }}
+                    value={kolicinaKarata}
+                    onChange={handleChange}
+                    displayEmpty
+                    inputProps={{ "aria-label": "1" }}
+                    id="kolicinaKarata"
+                  >
+                    <MenuItem value="">
+                      <em></em>
+                    </MenuItem>
+                    <MenuItem value={1}>1</MenuItem>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={4}>4</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div style={{ marginTop: "10px" }}>
+                <Typography variant="body2" component="div">
+                  Vaša vrsta članstva: {membershipName}
+                </Typography>
+                <Typography variant="body2" component="div">
+                  Ostvareni popust: {discount} %
+                </Typography>
+              </div>
             </div>
+
             <Button style={{ marginTop: "10px", backgroundColor: "white", color: "black", fontWeight: "bold" }} onClick={navigateToTicketPage}>
-              REZERVISI KARTE
+              REZERVIŠI KARTE
             </Button>
           </Box>
         </Fade>
