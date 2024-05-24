@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/nbpUsers")
 @RestController
+@CrossOrigin("*")
 public class NbpUserController {
 
     private final NbpUserService nbpUserService;
@@ -46,12 +47,13 @@ public class NbpUserController {
         });
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        return handleResponse(() -> {
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@RequestParam("userId") Long userId) {
+        return nbpUserService.delete(userId);
+        /*return handleResponse(() -> {
             nbpUserService.delete(id);
             return String.format("User with id %d successfully deleted.", id);
-        });
+        });*/
     }
 
     private ResponseEntity<?> handleResponse(Action action) {

@@ -47,15 +47,18 @@ export default function OverviewUser() {
     fetchKorisnici();
   }, []);
 
-  const handleObrisi = async (idKorisnika) => {
+  const handleObrisi = (idKorisnika) => {
     // Optimistically update the local state
     setKorisnici((prevKorisnici) => prevKorisnici.filter((korisnik) => korisnik.id !== idKorisnika));
 
     const token = localStorage.getItem("access_token");
     try {
       const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
-      await axios.delete(`${BASE_URL}/obrisiKorisnika/${idKorisnika}`, {
+      axios.delete(`http://localhost:8080/api/nbpUsers/delete`, {
         headers: { Authorization: `Bearer ${token}` },
+        params: {
+            userId: idKorisnika
+        }
       });
       console.log("Uspjesno obrisano");
     } catch (error) {

@@ -2,6 +2,7 @@ package ba.unsa.etf.nbp24t1.service;
 
 import ba.unsa.etf.nbp24t1.entity.NbpUserEntity;
 import ba.unsa.etf.nbp24t1.model.User;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -15,5 +16,5 @@ public interface NbpUserService {
 
     void update(Long id, User user);
 
-    void delete(Long id);
+    ResponseEntity delete(Long userId);
 }
