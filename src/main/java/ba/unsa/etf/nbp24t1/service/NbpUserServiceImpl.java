@@ -59,84 +59,53 @@ public class NbpUserServiceImpl implements NbpUserService {
         // TODO: Implement
     }
 
-    @Transactional
-    @Override
-    public ResponseEntity delete(Long userId) {
-        Logger logger = LoggerFactory.getLogger(this.getClass());
-        try {
-            logger.info("Attempting to find CinemaUserEntity with userId: {}", userId);
-            CinemaUserEntity cinemaUser = cinemaUserRepository.findByUserId(userId).orElseThrow(() -> {
-                logger.error("Id not found: {}", userId);
-                return new IllegalArgumentException("Id not found");
-            });
-            logger.info("Found CinemaUserEntity: {}", cinemaUser);
-            cinemaUserRepository.delete(cinemaUser);
-            logger.info("Successfully deleted CinemaUserEntity with userId: {}", userId);
-            return ResponseEntity.ok("Deleted");
-        } catch (Exception e) {
-            logger.error("Error occurred while deleting CinemaUserEntity with userId: {}", userId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-        }
-        /*try {
-            // Step 1: Verify existence in CinemaUserEntity before deletion
-            System.out.println("Verifying existence in CinemaUserEntity with userId: " + id);
-            //Optional<CinemaUserEntity> cinemaUser = cinemaUserRepository.findByUserId(id);
-//            if (cinemaUser.isPresent()) {
-//                System.out.println("Record found in CinemaUserEntity with userId: " + id);
-//                cinemaUserRepository.deleteByUserId(id);
-//                System.out.println("Successfully deleted from CinemaUserEntity with userId: " + id);
-//            } else {
-//                System.out.println("No record found in CinemaUserEntity with userId: " + id);
-//            }
-        } catch (Exception e) {
-            System.err.println("Failed to delete from CinemaUserEntity with userId: " + id);
-            e.printStackTrace();
-            return; // Stop execution if this step fails
-        }
+@Transactional
+@Override
+public ResponseEntity delete(Long userId) {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+    try {
+        // Attempt to find CinemaUserEntity
+        logger.info("Attempting to find CinemaUserEntity with userId: {}", userId);
+        CinemaUserEntity cinemaUser = cinemaUserRepository.findByUserId(userId).orElseThrow(() -> {
+            logger.error("Id not found: {}", userId);
+            return new IllegalArgumentException("Id not found");
+        });
+        logger.info("Found CinemaUserEntity: {}", cinemaUser);
 
-        *//*NbpUserEntity nbpUserEntity;
-        try {
-            // Step 2: Verify existence in NbpUserEntity before deletion
-            System.out.println("Attempting to find NbpUserEntity with id: " + id);
-            nbpUserEntity = nbpUserRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-            System.out.println("Successfully found NbpUserEntity with id: " + id);
-        } catch (Exception e) {
-            System.err.println("Failed to find NbpUserEntity with id: " + id);
-            e.printStackTrace();
-            return; // Stop execution if this step fails
-        }
+        // Delete CinemaUserEntity
+        cinemaUserRepository.delete(cinemaUser);
+        logger.info("Successfully deleted CinemaUserEntity with userId: {}", userId);
 
-        try {
-            // Step 3: Verify existence in NbpUserEntity before deletion
-            System.out.println("Verifying existence in NbpUserEntity with id: " + id);
-            if (nbpUserRepository.existsById(id)) {
-                nbpUserRepository.deleteById(id);
-                System.out.println("Successfully deleted from NbpUserEntity with id: " + id);
-            } else {
-                System.out.println("No record found in NbpUserEntity with id: " + id);
-            }
-        } catch (Exception e) {
-            System.err.println("Failed to delete from NbpUserEntity with id: " + id);
-            e.printStackTrace();
-            return; // Stop execution if this step fails
-        }
+        // Attempt to find NbpUserEntity
+        logger.info("Attempting to find NbpUserEntity with id: {}", userId);
+        NbpUserEntity nbpUserEntity = nbpUserRepository.findById(userId).orElseThrow(() -> {
+            logger.error("Id not found: {}", userId);
+            return new IllegalArgumentException("Id not found");
+        });
+        logger.info("Found NbpUserEntity: {}", nbpUserEntity);
 
-        try {
-            // Step 4: Verify existence in UserRepository before deletion
-            String email = nbpUserEntity.getEmail();
-            System.out.println("Attempting to delete from UserRepository with email: " + email);
-            if (userRepository.existsByEmail(email)) {
-                userRepository.deleteByEmail(email);
-                System.out.println("Successfully deleted from UserRepository with email: " + email);
-            } else {
-                System.out.println("No record found in UserRepository with email: " + email);
-            }
-        } catch (Exception e) {
-            System.err.println("Failed to delete from UserRepository with email: " + nbpUserEntity.getEmail());
-            e.printStackTrace();
-        }*/
+        // Attempt to find User in userRepository using email
+        logger.info("Attempting to find User in userRepository with email: {}", nbpUserEntity.getEmail());
+        ba.unsa.etf.nbp24t1.entity.Auth.User user = userRepository.findByEmail(nbpUserEntity.getEmail()).orElseThrow(() -> {
+            logger.error("User with email not found: {}", nbpUserEntity.getEmail());
+            return new IllegalArgumentException("User with email not found");
+        });
+        logger.info("Found User: {}", user);
+
+        // Delete User from userRepository
+        userRepository.delete(user);
+        logger.info("Successfully deleted User with email: {}", user.getEmail());
+
+        // Delete NbpUserEntity
+        nbpUserRepository.delete(nbpUserEntity);
+        logger.info("Successfully deleted NbpUserEntity with id: {}", userId);
+
+        return ResponseEntity.ok("Deleted");
+    } catch (Exception e) {
+        logger.error("Error occurred while deleting user with userId: {}", userId, e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
     }
+}
     private NbpUserEntity mapToNbpUserEntity(User user) {
         // TODO: Create CinemaUser and map it to this NbpUser
         var nbpUserEntity = new NbpUserEntity();
