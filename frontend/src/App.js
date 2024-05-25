@@ -13,6 +13,7 @@ import HomeLoginDefault from "./components/defaultHome/userLogin/HomeLoginDefaul
 import HomeOverviewMovies from "./components/admin/overviewMovies/HomeOverviewMovies";
 import HomeRegisterDefault from "./components/defaultHome/userRegister/HomeRegisterDefault";
 import HomeMovies from "./components/defaultHome/movies/HomeMovies";
+import HomeCinemaReviewsDefault from "./components/defaultHome/cinemaReviews/HomeCinemaReviewsDefault";
 
 import HomeTicket from "./components/user/ticketReservation/HomeTicket";
 import HomeAboutUs from "./components/defaultHome/aboutUs/HomeAboutUs";
@@ -44,6 +45,7 @@ function App() {
           <Route path="/eventsUser" element={<HomeEventsUser />} />
           <Route path="/reviewUser" element={<HomeReviewUser />} />
           <Route path="/profile" element={<HomeProfile />} />
+          <Route path="/cinemaReviewsDefault" element={<HomeCinemaReviewsDefault />} />
 
           <Route path="/ticket/:kolicinaKarata/:idFilma" element={<HomeTicket />} />
 

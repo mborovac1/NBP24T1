@@ -62,6 +62,9 @@ function AppbarDefault() {
               <MenuItem onClick={handleCloseNavMenu} component={Link} to="/aboutus">
                 <Typography textAlign="center">O nama</Typography>
               </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu} component={Link} to="/cinemaReviewsDefault">
+                <Typography textAlign="center">Naše recenzije</Typography>
+              </MenuItem>
             </Menu>
           </Box>
 
@@ -74,6 +77,9 @@ function AppbarDefault() {
             </Button>
             <Button onClick={handleCloseNavMenu} component={Link} to="/aboutus" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
               O nama
+            </Button>
+            <Button onClick={handleCloseNavMenu} component={Link} to="/cinemaReviewsDefault" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
+              Naše recenzije
             </Button>
           </Box>
           <Box style={{ display: "flex" }}>

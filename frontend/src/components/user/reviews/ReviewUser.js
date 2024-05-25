@@ -111,7 +111,7 @@ const ReviewUser = () => {
             </Box>
             <TextField label="Opis" multiline rows={8} variant="outlined" value={description} onChange={handleDescriptionChange} sx={{ marginTop: "1rem", width: "100%", backgroundColor: "white", borderRadius: "4px" }} />
             <Button variant="contained" color="primary" disabled={!isReviewValid} sx={{ marginTop: "1rem", width: "100%", color: "white", "&.Mui-disabled": { color: "white" } }} onClick={handleClick}>
-              Leave Review
+              Ostavite recenziju
             </Button>
             {successMessage && (
               <Typography variant="body1" sx={{ color: "green", marginTop: "1rem", fontWeight: "bold" }}>
