@@ -23,6 +23,7 @@ import HomeUser from "./components/user/home/HomeUser";
 import HomeMoviesUser from "./components/user/movies/HomeMoviesUser";
 import HomeAboutUsUser from "./components/user/aboutUs/HomeAboutUsUser";
 import HomeEventsUser from "./components/user/events/HomeEventsUser";
+import HomeReviewUser from "./components/user/reviews/HomeReviewUser";
 
 import HomeAddUser from "./components/admin/addUser/HomeAddUser";
 
@@ -41,6 +42,7 @@ function App() {
           <Route path="/MoviesUser" element={<HomeMoviesUser />} />
           <Route path="/aboutUsUser" element={<HomeAboutUsUser />} />
           <Route path="/eventsUser" element={<HomeEventsUser />} />
+          <Route path="/reviewUser" element={<HomeReviewUser />} />
           <Route path="/profile" element={<HomeProfile />} />
 
           <Route path="/ticket/:kolicinaKarata/:idFilma" element={<HomeTicket />} />

@@ -22,7 +22,7 @@ function AppbarUser() {
     const email = localStorage.getItem("email");
 
     await axios.post(`${BASE_URL}/auth/logout/${email}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     localStorage.removeItem("access_token");
@@ -77,6 +77,9 @@ function AppbarUser() {
               <MenuItem onClick={handleCloseNavMenu} component={Link} to="/aboutUsUser">
                 <Typography textAlign="center">O nama</Typography>
               </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu} component={Link} to="/reviewUser">
+                <Typography textAlign="center">Recenzije </Typography>
+              </MenuItem>
             </Menu>
           </Box>
 
@@ -89,6 +92,9 @@ function AppbarUser() {
             </Button>
             <Button onClick={handleCloseNavMenu} component={Link} to="/aboutUsUser" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
               O nama
+            </Button>
+            <Button onClick={handleCloseNavMenu} component={Link} to="/reviewUser" sx={{ my: 2, color: "white", display: "block", marginLeft: "50px", fontWeight: "bold", fontSize: "16px" }}>
+              Recenzije
             </Button>
           </Box>
           <Box style={{ display: "flex" }}>
