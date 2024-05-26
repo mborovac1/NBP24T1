@@ -31,7 +31,7 @@ public class DatabaseConnectionUtil {
 
     @PostConstruct
     private void fetchDatabaseData() {
-        log.info("Addresses: " + addressRepository.findAll());
+/*        log.info("Addresses: " + addressRepository.findAll());
         log.info("Cinemas: " + cinemaRepository.findAll());
         log.info("Cinema reviews:: " + cinemaReviewRepository.findAll());
         log.info("Cinema users: " + cinemaUserRepository.findAll());
@@ -47,6 +47,6 @@ public class DatabaseConnectionUtil {
         log.info("NBP Roles: " + nbpRoleRepository.findAll());
         log.info("NBP Users: " + nbpUserRepository.findAll());
         log.info("Seats: " + seatRepository.findAll());
-        log.info("Tickets: " + ticketRepository.findAll());
+        log.info("Tickets: " + ticketRepository.findAll());*/
     }
 }

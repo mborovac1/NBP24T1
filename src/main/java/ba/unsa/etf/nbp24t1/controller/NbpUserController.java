@@ -51,6 +51,7 @@ public class NbpUserController {
     }
 
     @DeleteMapping("/delete")
+    @Operation(summary = "Delete registered user", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<?> delete(@RequestParam("userId") Long userId) {
         return nbpUserService.delete(userId);
     }

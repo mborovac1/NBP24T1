@@ -25,6 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static ba.unsa.etf.nbp24t1.entity.Auth.Role.ADMIN;
 import static ba.unsa.etf.nbp24t1.entity.Auth.Role.USER;
@@ -37,37 +38,25 @@ import static org.springframework.http.HttpMethod.*;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    AuthenticationManager authenticationManager;
+    private static final String[] ADMIN_ROUTES = new String[]{
+            "/api/nbpUsers/",
+            "/api/cinemaUsers/users",
+            "/api/nbpUsers/add",
+            "/api/nbpUsers/delete"
+    };
+    private static final String[] USER_ROUTES = new String[]{
+
+    };
+    private static final String[] ADMIN_USER_ROUTES = new String[]{
+
+    };
+
     private final ba.unsa.etf.nbp24t1.security.AuthenticationFilter authenticationFilter;
     private final AuthenticationProvider authenticationProvider;
     private final UserDetailsService userDetailsService;
     private final LogoutHandler logoutHandler;
     private final JwtEntryPoint jwtEntryPoint;
-
-    private static final String[] ADMIN_GET = new String[] {
-            "/api/nbpUsers/"
-    };
-
-    private static final String[] ADMIN_POST = new String[] {
-            "/api/nbpUsers/add"
-    };
-
-    private static final String[] ADMIN_PUT = new String[] {
-    };
-
-    private static final String[] ADMIN_DELETE = new String[] {
-            "/api/nbpUsers/delete"
-    };
-
-    private static final String[] USER_GET = new String[] {
-
-    };
-
-    private static final String[] USER_POST = new String[] {
-    };
-
-    private static final String[] USER_PUT = new String[] {
-    };
+    AuthenticationManager authenticationManager;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -79,19 +68,14 @@ public class SecurityConfig {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
         authenticationManager = authenticationManagerBuilder.build();
-        http.cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(jwtEntryPoint).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+        http.cors().and().csrf().disable().exceptionHandling()
+                .authenticationEntryPoint(jwtEntryPoint).and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests()
-                .requestMatchers(GET, ADMIN_GET).hasRole(ADMIN.name())
-                .requestMatchers(POST, ADMIN_POST).hasRole(ADMIN.name())
-                .requestMatchers(PUT, ADMIN_PUT).hasRole(ADMIN.name())
-                .requestMatchers(DELETE, ADMIN_DELETE).hasRole(ADMIN.name())
-                .requestMatchers(GET, USER_GET).hasRole(USER.name())
-                .requestMatchers(POST, USER_POST).hasRole(USER.name())
-                .requestMatchers(PUT, USER_PUT).hasRole(USER.name())
-                .requestMatchers("/**").permitAll()
-                .anyRequest().permitAll().and().authenticationManager(authenticationManager);
+                .requestMatchers(ADMIN_ROUTES).hasRole(ADMIN.name())
+                .requestMatchers(USER_ROUTES).hasRole(USER.name())
+                .requestMatchers(ADMIN_USER_ROUTES).hasAnyRole(USER.name(), ADMIN.name())
+                .requestMatchers("/**").permitAll().anyRequest().permitAll().and().authenticationManager(authenticationManager);
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -104,7 +88,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
 
