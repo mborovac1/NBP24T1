@@ -2,6 +2,8 @@ package ba.unsa.etf.nbp24t1.controller;
 
 import ba.unsa.etf.nbp24t1.entity.MovieEntity;
 import ba.unsa.etf.nbp24t1.service.MovieService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -26,16 +28,19 @@ public class MovieController {
     }
 
     @PostMapping("/add")
+    @Operation(summary = "Adding new movie", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity addMovie(@RequestBody MovieEntity movie) {
         return movieService.addMovie(movie);
     }
 
     @DeleteMapping("/delete/{id}")
+    @Operation(summary = "Deleting movie", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity deleteMovie(@PathVariable int id) {
         return movieService.deleteMovie(id);
     }
 
     @GetMapping("/report/last-7-days/pdf")
+    @Operation(summary = "Downloading report pdf", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<InputStreamResource> getMoviesReportPdf() {
         ByteArrayInputStream bis = movieService.generateMoviesReportPdf();
 

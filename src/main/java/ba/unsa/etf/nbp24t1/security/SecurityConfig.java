@@ -42,7 +42,10 @@ public class SecurityConfig {
             "/api/nbpUsers/",
             "/api/cinemaUsers/users",
             "/api/nbpUsers/add",
-            "/api/nbpUsers/delete"
+            "/api/nbpUsers/delete",
+            "/api/movies/delete/{id}",
+            "/api/movies/add",
+            "/api/movies/report/last-7-days/pdf"
     };
     private static final String[] USER_ROUTES = new String[]{
 
