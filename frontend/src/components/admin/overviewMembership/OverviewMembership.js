@@ -23,18 +23,18 @@ export default function OverviewMembership() {
       setIsAdmin(decodedToken.role === "ROLE_ADMIN");
 
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemaUsers";
-        const response = await axios.get(`${BASE_URL}/users`, {
+        const BASE_URL = process.env.REACT_APP_BASE_URL || "http:/localhost:8080";
+        const response = await axios.get(`${BASE_URL}/api/cinemaUsers/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         setKorisnici(response.data);
-        //console.log("RESPONSE", response.data);
 
-        const responseAll = await axios.get(`${BASE_URL}/`, {
+        const responseAll = await axios.get(`${BASE_URL}/api/cinemaUsers/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log("RESPONSE", responseAll.data);
+        console.log(sviKorisnici);
 
         setSviKorisnici(responseAll.data);
 
@@ -43,8 +43,8 @@ export default function OverviewMembership() {
         for (let i = 0; i < responseAll.data.length; i++) {
           const membershipId = responseAll.data[i].membershipId;
           if (membershipId != null) {
-            const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/memberships";
-            const membershipResponse = await axios.get(`${BASE_URL_ADDRESS}/membership/${membershipId}`, {
+            const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+            const membershipResponse = await axios.get(`${BASE_URL_ADDRESS}/api/memberships/membership/${membershipId}`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             membershipArray.push(membershipResponse.data);
@@ -76,8 +76,8 @@ export default function OverviewMembership() {
     console.log("USER", membershipId);
 
     try {
-      const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/memberships";
-      const response = await axios.post(`${BASE_URL_ADDRESS}/updateMembership/${membershipId}/${newType}`, {
+      const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+      const response = await axios.post(`${BASE_URL_ADDRESS}/api/memberships/updateMembership/${membershipId}/${newType}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

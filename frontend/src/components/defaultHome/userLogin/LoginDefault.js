@@ -82,7 +82,7 @@ function LoginDefault() {
   const handleLogin = async () => {
     try {
       const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
-      const response = await axios.post(`${BASE_URL}/auth/login`, {
+      const response = await axios.post(`${BASE_URL}/api/auth/login`, {
         email,
         password,
       });
@@ -126,7 +126,7 @@ function LoginDefault() {
     const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
 
     try {
-      const response = await fetch(`${BASE_URL}/auth/forgot-password/${emailReset}`, {
+      const response = await fetch(`${BASE_URL}/api/auth/forgot-password/${emailReset}`, {
         method: "POST",
       });
 

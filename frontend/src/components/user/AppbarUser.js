@@ -21,7 +21,7 @@ function AppbarUser() {
     const token = localStorage.getItem("access_token");
     const email = localStorage.getItem("email");
 
-    await axios.post(`${BASE_URL}/auth/logout/${email}`, {
+    await axios.post(`${BASE_URL}/api/auth/logout/${email}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
