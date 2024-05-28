@@ -19,10 +19,10 @@ public class CinemaUserEntity {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "user_id")
+    @Column(name = "USER_ID")
     private Long userId;
 
-    @Column(name = "membership_id")
+    @Column(name = "MEMBERSHIP_ID")
     private Long membershipId;
 
     public Long getId() {

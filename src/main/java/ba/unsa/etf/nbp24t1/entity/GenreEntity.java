@@ -21,6 +21,6 @@ public class GenreEntity {
     private Long id;
 
     @NotBlank(message = "Genre name must exist.")
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "NAME", nullable = false, length = 50)
     private String name;
 }

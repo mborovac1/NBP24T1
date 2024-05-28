@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
-    List<MovieEntity> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    //List<MovieEntity> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 }

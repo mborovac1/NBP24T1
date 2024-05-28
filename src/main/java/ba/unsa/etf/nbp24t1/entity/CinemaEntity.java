@@ -21,9 +21,9 @@ public class CinemaEntity {
     private Long id;
 
     @NotBlank(message = "Cinema name must exist.")
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "NAME", nullable = false, length = 50)
     private String name;
 
-    @Column(name = "address_id")
+    @Column(name = "ADDRESS_ID")
     private Long addressId;
 }

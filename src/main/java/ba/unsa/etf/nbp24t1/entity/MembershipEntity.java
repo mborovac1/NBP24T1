@@ -28,16 +28,16 @@ public class MembershipEntity {
 
     @NotEmpty(message = "Membership discount must exist.")
     @PositiveOrZero(message = "Membership discount must be a non-negative number.")
-    @Column(name = "discount", nullable = false)
+    @Column(name = "DISCOUNT", nullable = false)
     private Double discount;
 
     @FutureOrPresent(message = "Membership expire date must be in future.")
     @JsonFormat(pattern = "dd.MM.yyyy.")
-    @Column(name = "expiry_date")
+    @Column(name = "EXPIRY_DATE")
     private LocalDate expiryDate;
 
     @NotBlank(message = "Membership type must exist.")
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false, length = 50)
+    @Column(name = "TYPE", nullable = false, length = 50)
     private MembershipType type;
 }

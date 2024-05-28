@@ -14,5 +14,5 @@ public interface MovieService {
 
     ResponseEntity addMovie(MovieEntity movie);
 
-    ByteArrayInputStream generateMoviesReportPdf();
+    //ByteArrayInputStream generateMoviesReportPdf();
 }

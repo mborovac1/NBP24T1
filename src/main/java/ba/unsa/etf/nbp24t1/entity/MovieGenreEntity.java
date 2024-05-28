@@ -19,9 +19,9 @@ public class MovieGenreEntity {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "movie_id")
+    @Column(name = "MOVIE_ID")
     private Long movieId;
 
-    @Column(name = "genre_id")
+    @Column(name = "GENRE_ID")
     private Long genreId;
 }

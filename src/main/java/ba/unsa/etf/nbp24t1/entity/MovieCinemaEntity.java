@@ -19,9 +19,9 @@ public class MovieCinemaEntity {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "movie_id")
+    @Column(name = "MOVIE_ID")
     private Long movieId;
 
-    @Column(name = "cinema_id")
+    @Column(name = "CINEMA_ID")
     private Long cinemaId;
 }

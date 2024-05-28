@@ -21,9 +21,9 @@ public class AddressEntity {
     private Long id;
 
     @NotBlank(message = "Address name must exist.")
-    @Column(name = "name", nullable = false)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(name = "city_id")
+    @Column(name = "CITY_ID")
     private Long cityId;
 }

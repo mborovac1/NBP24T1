@@ -23,18 +23,18 @@ public class SeatEntity {
     private Long id;
 
     @NotBlank(message = "Seat row must exist.")
-    @Column(name = "seat_row", nullable = false, length = 2)
+    @Column(name = "SEAT_ROW", nullable = false, length = 2)
     private String row;
 
     @NotEmpty(message = "Seat number must exist.")
     @Positive(message = "Seat number must be a positive number.")
-    @Column(name = "seat_number", nullable = false)
+    @Column(name = "SEAT_NUMBER", nullable = false)
     private Integer number;
 
     @NotBlank(message = "Seat type must exist.")
-    @Column(name = "seat_type", nullable = false, length = 50)
+    @Column(name = "SEAT_TYPE", nullable = false, length = 50)
     private String type;
 
-    @Column(name = "hall_id")
+    @Column(name = "HALL_ID")
     private Long hallId;
 }

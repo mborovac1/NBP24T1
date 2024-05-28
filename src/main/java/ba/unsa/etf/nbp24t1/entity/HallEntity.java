@@ -28,9 +28,9 @@ public class HallEntity {
 
     @NotEmpty(message = "Hall number must exist.")
     @Positive(message = "Hall number must be a positive number.")
-    @Column(name = "hall_number", nullable = false, unique = true)
+    @Column(name = "HALL_NUMBER", nullable = false, unique = true)
     private Integer number;
 
-    @Column(name = "cinema_id")
+    @Column(name = "CINEMA_ID")
     private Long cinemaId;
 }

@@ -23,17 +23,17 @@ public class MovieReviewEntity {
     private Long id;
 
     @NotBlank(message = "Movie review text must exist.")
-    @Column(name = "text", nullable = false)
+    @Column(name = "TEXT", nullable = false)
     private String text;
 
     @NotEmpty(message = "Movie rating must exist.")
     @Positive(message = "Movie rating must be a positive number.")
-    @Column(name = "rating", nullable = false)
+    @Column(name = "RATING", nullable = false)
     private Double rating;
 
-    @Column(name = "cinema_user_id")
+    @Column(name = "CINEMA_USER_ID")
     private Long cinemaUserId;
 
-    @Column(name = "movie_id")
+    @Column(name = "MOVIE_ID")
     private Long movieId;
 }

@@ -24,26 +24,26 @@ public class MovieEntity {
     private Long id;
 
     @NotBlank(message = "Movie name must exist.")
-    @Column(name = "name", nullable = false, length = 50)
+    @Column(name = "NAME", nullable = false, length = 50)
     private String name;
 
     @NotEmpty(message = "Movie duration must exist.")
-    @Column(name = "duration", nullable = false)
+    @Column(name = "DURATION", nullable = false)
     private Integer duration;
 
     @NotBlank(message = "Movie description must exist.")
-    @Column(name = "description", nullable = false)
+    @Column(name = "DESCRIPTION", nullable = false)
     private String description;
 
-    @Column(name = "poster_path", nullable = false)
+    @Column(name = "POSTER_PATH", nullable = false)
     private String posterPath;
 
-    @NotEmpty(message = "Movie price must exist.")
-    @Column(name = "price", nullable = false)
-    private Double price;
+/*    @NotEmpty(message = "Movie price must exist.")
+    @Column(name = "PRICE", nullable = false)
+    private Double price;*/
 
-    @NotEmpty(message = "Created at must exist.")
-    @Column(name = "created_at", nullable = false)
+/*    @NotEmpty(message = "Created at must exist.")
+    @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
     public LocalDateTime getCreatedAt() {
@@ -52,5 +52,5 @@ public class MovieEntity {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
+    }*/
 }
