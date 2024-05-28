@@ -17,7 +17,7 @@ function AppbarUser() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
   const handleLogout = async (e) => {
-    const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
     const token = localStorage.getItem("access_token");
     const email = localStorage.getItem("email");
 

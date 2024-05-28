@@ -43,7 +43,7 @@ export default function OverviewMembership() {
         for (let i = 0; i < responseAll.data.length; i++) {
           const membershipId = responseAll.data[i].membershipId;
           if (membershipId != null) {
-            const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+            const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL;
             const membershipResponse = await axios.get(`${BASE_URL_ADDRESS}/api/memberships/membership/${membershipId}`, {
               headers: { Authorization: `Bearer ${token}` },
             });
@@ -76,7 +76,7 @@ export default function OverviewMembership() {
     console.log("USER", membershipId);
 
     try {
-      const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+      const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL;
       const response = await axios.post(`${BASE_URL_ADDRESS}/api/memberships/updateMembership/${membershipId}/${newType}`, {
         headers: { Authorization: `Bearer ${token}` },
       });

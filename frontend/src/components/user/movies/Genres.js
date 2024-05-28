@@ -19,7 +19,7 @@ const Genres = ({ selectedGenres, setSelectedGenres, genres, setGenres, onGenreS
     const fetchZanrovi = async () => {
       const token = localStorage.getItem("access_token");
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
         const response = await axios.get(`${BASE_URL}/api/genres/`, {
           headers: { Authorization: `Bearer ${token}` },
         });

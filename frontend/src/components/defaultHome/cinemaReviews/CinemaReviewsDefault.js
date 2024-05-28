@@ -11,7 +11,7 @@ const CinemaReviewsDefault = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
         const response = await axios.get(`${BASE_URL}/api/cinemaReviews/`);
         setReviews(response.data);
       } catch (error) {

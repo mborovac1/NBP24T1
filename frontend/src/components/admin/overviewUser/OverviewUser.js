@@ -17,7 +17,7 @@ export default function OverviewUser() {
       setIsAdmin(decodedToken.role === "ROLE_ADMIN");
 
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
         const response = await axios.get(`${BASE_URL}/api/cinemaUsers/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -28,7 +28,7 @@ export default function OverviewUser() {
 
         for (let i = 0; i < response.data.length; i++) {
           const addressId = response.data[i].addressId;
-          const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+          const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL;
           const addressResponse = await axios.get(`${BASE_URL_ADDRESS}/api/addresses/address/${addressId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -53,7 +53,7 @@ export default function OverviewUser() {
 
     const token = localStorage.getItem("access_token");
     try {
-      const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+      const BASE_URL = process.env.REACT_APP_BASE_URL;
       axios.delete(`${BASE_URL}/api/nbpUsers/delete`, {
         headers: { Authorization: `Bearer ${token}` },
         params: {

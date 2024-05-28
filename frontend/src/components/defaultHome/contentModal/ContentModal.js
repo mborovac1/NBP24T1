@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import { unavailable } from "../movies/config";
 import { useEffect, useState } from "react";
 import "./ContentModal.css";
+const apiUrl = process.env.REACT_APP_BASE_URL;
 
 const style = {
   position: "absolute",
@@ -30,7 +31,7 @@ export default function ContentModal({ children, id }) {
   const [filmovi, setFilmovi] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/movies/")
+    fetch(`${apiUrl}/api/movies/`)
       .then((res) => res.json())
       .then((result) => {
         setFilmovi(result);

@@ -5,6 +5,7 @@ import "./Movies.css";
 import Genres from "./Genres";
 import { Button } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+const apiUrl = process.env.REACT_APP_BASE_URL;
 
 const Movies = () => {
   const [filmovi, setFilmovi] = useState([]);
@@ -15,13 +16,13 @@ const Movies = () => {
   const [filteredMovies, setFilteredMovies] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/movies/")
+    fetch(`${apiUrl}/api/movies/`)
       .then((res) => res.json())
       .then((result) => {
         setFilmovi(result);
       });
 
-      fetch("http://localhost:8080/api/movieGenres/")
+      fetch(`${apiUrl}/api/movieGenres/`)
       .then((res) => res.json())
       .then((result) => {
         console.log(result);

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Chip from "@mui/material/Chip";
+const apiUrl = process.env.REACT_APP_BASE_URL;
 
 const Genres = ({ selectedGenres, setSelectedGenres, genres, setGenres, onGenreSelect, onGenreDeselect }) => {
   const handleAdd = (genre) => {
@@ -15,7 +16,7 @@ const Genres = ({ selectedGenres, setSelectedGenres, genres, setGenres, onGenreS
   };
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/genres/")
+    fetch(`${apiUrl}/api/genres/`)
       .then((res) => res.json())
       .then((result) => {
         setGenres(result);

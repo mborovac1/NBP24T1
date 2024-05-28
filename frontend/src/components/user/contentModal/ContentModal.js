@@ -63,7 +63,7 @@ export default function ContentModal({ children, id }) {
     const fetchFilmovi = async () => {
       const token = localStorage.getItem("access_token");
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
         const response = await axios.get(`${BASE_URL}/api/movies/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -80,8 +80,8 @@ export default function ContentModal({ children, id }) {
     const fetchUser = async () => {
       const token = localStorage.getItem("access_token");
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemaUsers";
-        const response = await axios.get(`${BASE_URL}/user/${localStorage.getItem("email")}`, {
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
+        const response = await axios.get(`${BASE_URL}/api/cinemaUsers/user/${localStorage.getItem("email")}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
@@ -99,16 +99,16 @@ export default function ContentModal({ children, id }) {
 
       const token = localStorage.getItem("access_token");
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemaUsers";
-        const responseSetKorisnici = await axios.get(`${BASE_URL}/`, {
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
+        const responseSetKorisnici = await axios.get(`${BASE_URL}/api/cinemaUsers/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         const userWithMembership = responseSetKorisnici.data.find((korisnik) => korisnik.userId === user.id);
         if (userWithMembership && userWithMembership.membershipId) {
           const membershipId = userWithMembership.membershipId;
-          const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/memberships";
-          const membershipResponse = await axios.get(`${BASE_URL_ADDRESS}/membership/${membershipId}`, {
+          const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL;
+          const membershipResponse = await axios.get(`${BASE_URL_ADDRESS}/api/memberships/membership/${membershipId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 

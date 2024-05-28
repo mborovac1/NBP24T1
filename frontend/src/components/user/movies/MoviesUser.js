@@ -42,11 +42,12 @@ const MoviesUser = () => {
   const [cinemaUserId, setCinemaUserId] = useState(null);
   const token = localStorage.getItem("access_token");
   const email = localStorage.getItem("email");
+  const apiUrl = process.env.REACT_APP_BASE_URL;
 
   useEffect(() => {
     const fetchFilmovi = async () => {
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
         const response = await axios.get(`${BASE_URL}/api/movies/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -58,7 +59,7 @@ const MoviesUser = () => {
 
     const fetchGenres = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/movieGenres/");
+        const response = await axios.get(`${apiUrl}/api/movieGenres/`);
         setAllGenres(response.data);
       } catch (error) {
         console.error("Failed to fetch genres:", error);
@@ -67,8 +68,8 @@ const MoviesUser = () => {
 
     const fetchUser = async () => {
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemaUsers";
-        const response = await axios.get(`${BASE_URL}/user/${email}`, {
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
+        const response = await axios.get(`${BASE_URL}/api/cinemaUsers/user/${email}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
@@ -80,7 +81,7 @@ const MoviesUser = () => {
 
     const fetchReviews = async () => {
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
         const response = await axios.get(`${BASE_URL}/api/movieReviews/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -138,7 +139,7 @@ const MoviesUser = () => {
   const checkIfUserHasLeftReview = async (movieId) => {
     setLoadingReviewCheck(true);
     try {
-      const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+      const BASE_URL = process.env.REACT_APP_BASE_URL;
       const response = await axios.get(`${BASE_URL}/api/movieReviews/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -177,7 +178,7 @@ const MoviesUser = () => {
     };
   
     try {
-      const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+      const BASE_URL = process.env.REACT_APP_BASE_URL;
       await axios.post(`${BASE_URL}/api/movieReviews/addMovieReview`, movieReview, {
         headers: { Authorization: `Bearer ${token}` },
       });

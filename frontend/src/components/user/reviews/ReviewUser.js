@@ -39,8 +39,8 @@ const ReviewUser = () => {
 
   const fetchUser = async () => {
     try {
-      const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemaUsers";
-      const response = await axios.get(`${BASE_URL}/user/${email}`, {
+      const BASE_URL = process.env.REACT_APP_BASE_URL;
+      const response = await axios.get(`${BASE_URL}/api/cinemaUsers/user/${email}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(response.data);
@@ -52,8 +52,8 @@ const ReviewUser = () => {
 
   const fetchCinemas = async () => {
     try {
-      const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemas/";
-      const response = await axios.get(BASE_URL, {
+      const BASE_URL = process.env.REACT_APP_BASE_URL;
+      const response = await axios.get(`${BASE_URL}/api/cinemas/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const cinemas = response.data;
@@ -67,7 +67,7 @@ const ReviewUser = () => {
 
   const checkIfUserHasLeftReview = async (cinemaUserId) => {
     try {
-      const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+      const BASE_URL = process.env.REACT_APP_BASE_URL;
       const response = await axios.get(`${BASE_URL}/api/cinemaReviews/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -109,7 +109,7 @@ const ReviewUser = () => {
     };
 
     try {
-      const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+      const BASE_URL = process.env.REACT_APP_BASE_URL;
       await axios.post(`${BASE_URL}/api/cinemaReviews/addCinemaReview`, cinemaReview, {
         headers: { Authorization: `Bearer ${token}` },
       });

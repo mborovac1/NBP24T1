@@ -22,7 +22,7 @@ export default function OverviewMovies() {
     const token = localStorage.getItem("access_token");
     try {
       const BASE_URL =
-        process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+        process.env.REACT_APP_BASE_URL;
       await axios.delete(`${BASE_URL}/api/movies/delete/${idFilma}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -48,20 +48,20 @@ export default function OverviewMovies() {
       // You can add more conditions here based on the user's role if needed
 
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
         const response = await axios.get(`${BASE_URL}/api/movies/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setFilmovi(response.data);
 
         
-        const BASE_URL_MOVIEGENRE = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+        const BASE_URL_MOVIEGENRE = process.env.REACT_APP_BASE_URL;
         const response_moviegenre = await axios.get(`${BASE_URL_MOVIEGENRE}/api/movieGenres/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMovieGenres(response_moviegenre.data);
 
-        const BASE_URL_GENRE = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+        const BASE_URL_GENRE = process.env.REACT_APP_BASE_URL;
         const response_genre = await axios.get(`${BASE_URL_GENRE}/api/genres/`, {
           headers: { Authorization: `Bearer ${token}` },
         });

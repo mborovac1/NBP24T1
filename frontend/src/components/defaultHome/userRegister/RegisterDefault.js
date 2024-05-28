@@ -149,7 +149,7 @@ function RegisterDefault() {
       const spol = document.getElementById("spol").value;
       const role = "USER"; // since role is always "USER"
 
-      const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+      const BASE_URL = process.env.REACT_APP_BASE_URL;
       const response = await fetch(`${BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: {

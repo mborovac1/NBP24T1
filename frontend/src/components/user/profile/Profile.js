@@ -30,7 +30,7 @@ const PasswordChangeModal = ({ open, onClose }) => {
               
           const token = localStorage.getItem("access_token");
           const email = localStorage.getItem("email");
-          const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+          const BASE_URL = process.env.REACT_APP_BASE_URL;
   
           const requestBody = {
               email: email,
@@ -134,8 +134,8 @@ const Profile = () => {
     const fetchUser = async () => {
       const token = localStorage.getItem("access_token");
       try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/cinemaUsers";
-        const response = await axios.get(`${BASE_URL}/user/${email}`, {
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
+        const response = await axios.get(`${BASE_URL}/api/cinemaUsers/user/${email}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log("RESPONSE", response.data);
@@ -144,8 +144,8 @@ const Profile = () => {
         //Address name
         const addressId = response.data.addressId;
         console.log("ADDRES ID:", addressId);
-        const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL || "http://localhost:8080/api/addresses";
-        const addressResponse = await axios.get(`${BASE_URL_ADDRESS}/address/${addressId}`, {
+        const BASE_URL_ADDRESS = process.env.REACT_APP_BASE_URL;
+        const addressResponse = await axios.get(`${BASE_URL_ADDRESS}/api/addresses/address/${addressId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log("ADDRESS RESPONSE", addressResponse.data);
