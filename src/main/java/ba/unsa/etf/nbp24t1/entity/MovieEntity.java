@@ -38,11 +38,11 @@ public class MovieEntity {
     @Column(name = "POSTER_PATH", nullable = false)
     private String posterPath;
 
-/*    @NotEmpty(message = "Movie price must exist.")
+    @NotEmpty(message = "Movie price must exist.")
     @Column(name = "PRICE", nullable = false)
-    private Double price;*/
+    private Double price;
 
-/*    @NotEmpty(message = "Created at must exist.")
+    @NotEmpty(message = "Created at must exist.")
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
@@ -52,5 +52,5 @@ public class MovieEntity {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }*/
+    }
 }

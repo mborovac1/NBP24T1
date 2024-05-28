@@ -67,7 +67,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public ResponseEntity addMovie(MovieEntity movie) {
-        //movie.setCreatedAt(LocalDateTime.now());
+        movie.setCreatedAt(LocalDateTime.now());
         movieRepository.save(movie);
 
         JSONObject objekat = new JSONObject();
@@ -85,14 +85,14 @@ public class MovieServiceImpl implements MovieService {
     }
 
 
-/*    public List<MovieEntity> getMoviesFromLast7Days() {
+    public List<MovieEntity> getMoviesFromLast7Days() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime sevenDaysAgo = now.minusDays(7);
         return movieRepository.findByCreatedAtBetween(sevenDaysAgo, now);
-    }*/
+    }
 
-    /*public ByteArrayInputStream generateMoviesReportPdf() {
-//        List<MovieEntity> movies = getMoviesFromLast7Days();
+    public ByteArrayInputStream generateMoviesReportPdf() {
+        List<MovieEntity> movies = getMoviesFromLast7Days();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(out);
@@ -136,5 +136,5 @@ public class MovieServiceImpl implements MovieService {
         document.close();
 
         return new ByteArrayInputStream(out.toByteArray());
-    }*/
+    }
 }

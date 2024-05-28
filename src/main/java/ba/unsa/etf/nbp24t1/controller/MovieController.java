@@ -39,7 +39,7 @@ public class MovieController {
         return movieService.deleteMovie(id);
     }
 
-   /* @GetMapping("/report/last-7-days/pdf")
+    @GetMapping("/report/last-7-days/pdf")
     @Operation(summary = "Downloading report pdf", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<InputStreamResource> getMoviesReportPdf() {
         ByteArrayInputStream bis = movieService.generateMoviesReportPdf();
@@ -51,5 +51,5 @@ public class MovieController {
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(bis));
-    }*/
+    }
 }

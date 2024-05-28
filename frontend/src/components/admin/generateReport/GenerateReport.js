@@ -14,8 +14,10 @@ const GenerateReport = () => {
   const generateReport = async (endpoint, fileName) => {
     try {
       const BASE_URL = process.env.REACT_APP_BASE_URL;
+      const token = localStorage.getItem("access_token");
       const response = await axios.get(`${BASE_URL}${endpoint}`, {
         responseType: "blob",
+        headers: { Authorization: `Bearer ${token}` }
       });
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
