@@ -1,6 +1,7 @@
 package ba.unsa.etf.nbp24t1.service;
 
 import ba.unsa.etf.nbp24t1.entity.AddressEntity;
+import ba.unsa.etf.nbp24t1.entity.Auth.Token;
 import ba.unsa.etf.nbp24t1.entity.CinemaUserEntity;
 import ba.unsa.etf.nbp24t1.entity.CityEntity;
 import ba.unsa.etf.nbp24t1.entity.NbpUserEntity;
@@ -8,6 +9,7 @@ import ba.unsa.etf.nbp24t1.exception.AlreadyExistsException;
 import ba.unsa.etf.nbp24t1.exception.NotFoundException;
 import ba.unsa.etf.nbp24t1.model.User;
 import ba.unsa.etf.nbp24t1.repository.*;
+import ba.unsa.etf.nbp24t1.repository.Auth.TokenRepository;
 import ba.unsa.etf.nbp24t1.repository.Auth.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -35,6 +36,7 @@ public class NbpUserServiceImpl implements NbpUserService {
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenRepository tokenRepository;
 
     @Override
     public List<NbpUserEntity> getAll() {
@@ -59,95 +61,90 @@ public class NbpUserServiceImpl implements NbpUserService {
         // TODO: Implement
     }
 
-@Transactional
-@Override
-public ResponseEntity delete(Long userId) {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    try {
-        // Attempt to find CinemaUserEntity
-        logger.info("Attempting to find CinemaUserEntity with userId: {}", userId);
-        CinemaUserEntity cinemaUser = cinemaUserRepository.findByUserId(userId).orElseThrow(() -> {
-            logger.error("Id not found: {}", userId);
-            return new IllegalArgumentException("Id not found");
-        });
-        logger.info("Found CinemaUserEntity: {}", cinemaUser);
+    @Transactional
+    @Override
+    public ResponseEntity delete(Long userId) {
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        try {
+            // Attempt to find CinemaUserEntity
+            logger.info("Attempting to find CinemaUserEntity with userId: {}", userId);
+            CinemaUserEntity cinemaUser = cinemaUserRepository.findByUserId(userId).orElseThrow(() -> {
+                logger.error("Id not found: {}", userId);
+                return new IllegalArgumentException("Id not found");
+            });
+            logger.info("Found CinemaUserEntity: {}", cinemaUser);
 
-        // Delete CinemaUserEntity
-        cinemaUserRepository.delete(cinemaUser);
-        logger.info("Successfully deleted CinemaUserEntity with userId: {}", userId);
+            // Attempt to find NbpUserEntity
+            logger.info("Attempting to find NbpUserEntity with id: {}", userId);
+            NbpUserEntity nbpUserEntity = nbpUserRepository.findById(userId).orElseThrow(() -> {
+                logger.error("Id not found: {}", userId);
+                return new IllegalArgumentException("Id not found");
+            });
+            logger.info("Found NbpUserEntity: {}", nbpUserEntity);
 
-        // Attempt to find NbpUserEntity
-        logger.info("Attempting to find NbpUserEntity with id: {}", userId);
-        NbpUserEntity nbpUserEntity = nbpUserRepository.findById(userId).orElseThrow(() -> {
-            logger.error("Id not found: {}", userId);
-            return new IllegalArgumentException("Id not found");
-        });
-        logger.info("Found NbpUserEntity: {}", nbpUserEntity);
+            // Attempt to find User in userRepository using email
+            logger.info("Attempting to find User in userRepository with email: {}", nbpUserEntity.getEmail());
+            ba.unsa.etf.nbp24t1.entity.Auth.User user = userRepository.findByEmail(nbpUserEntity.getEmail()).orElseThrow(() -> {
+                logger.error("User with email not found: {}", nbpUserEntity.getEmail());
+                return new IllegalArgumentException("User with email not found");
+            });
+            logger.info("Found User: {}", user);
 
-        // Attempt to find User in userRepository using email
-        logger.info("Attempting to find User in userRepository with email: {}", nbpUserEntity.getEmail());
-        ba.unsa.etf.nbp24t1.entity.Auth.User user = userRepository.findByEmail(nbpUserEntity.getEmail()).orElseThrow(() -> {
-            logger.error("User with email not found: {}", nbpUserEntity.getEmail());
-            return new IllegalArgumentException("User with email not found");
-        });
-        logger.info("Found User: {}", user);
+            List<Token> tokenList = tokenRepository.findAllByUserId(user.getId());
+            tokenRepository.deleteAll(tokenList);
 
-        // Delete User from userRepository
-        userRepository.delete(user);
-        logger.info("Successfully deleted User with email: {}", user.getEmail());
+            // Delete CinemaUserEntity
+            cinemaUserRepository.delete(cinemaUser);
+            logger.info("Successfully deleted CinemaUserEntity with userId: {}", userId);
 
-        // Delete NbpUserEntity
-        nbpUserRepository.delete(nbpUserEntity);
-        logger.info("Successfully deleted NbpUserEntity with id: {}", userId);
+            // Delete User from userRepository
+            userRepository.delete(user);
+            logger.info("Successfully deleted User with email: {}", user.getEmail());
 
-        return ResponseEntity.ok("Deleted");
-    } catch (Exception e) {
-        logger.error("Error occurred while deleting user with userId: {}", userId, e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+            // Delete NbpUserEntity
+            nbpUserRepository.delete(nbpUserEntity);
+            logger.info("Successfully deleted NbpUserEntity with id: {}", userId);
+
+            return ResponseEntity.ok("Deleted");
+        } catch (Exception e) {
+            logger.error("Error occurred while deleting user with userId: {}", userId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+        }
     }
-}
+
     private NbpUserEntity mapToNbpUserEntity(User user) {
         // TODO: Create CinemaUser and map it to this NbpUser
         var nbpUserEntity = new NbpUserEntity();
 
         String firstName = user.getFirstName();
-        if (StringUtils.isNotBlank(firstName))
-            nbpUserEntity.setFirstName(firstName);
+        if (StringUtils.isNotBlank(firstName)) nbpUserEntity.setFirstName(firstName);
 
         String lastName = user.getLastName();
-        if (StringUtils.isNotBlank(lastName))
-            nbpUserEntity.setLastName(lastName);
+        if (StringUtils.isNotBlank(lastName)) nbpUserEntity.setLastName(lastName);
 
         String email = user.getEmail();
-        if (StringUtils.isNotBlank(email))
-            nbpUserEntity.setEmail(email);
+        if (StringUtils.isNotBlank(email)) nbpUserEntity.setEmail(email);
 
         String password = user.getPassword();
-        if (StringUtils.isNotBlank(password))
-            nbpUserEntity.setPassword(passwordEncoder.encode(password));
+        if (StringUtils.isNotBlank(password)) nbpUserEntity.setPassword(passwordEncoder.encode(password));
 
         String username = user.getUsername();
-        if (StringUtils.isNotBlank(username))
-            nbpUserEntity.setUsername(username);
+        if (StringUtils.isNotBlank(username)) nbpUserEntity.setUsername(username);
 
         String phoneNumber = user.getPhoneNumber();
-        if (StringUtils.isNotBlank(phoneNumber))
-            nbpUserEntity.setPhoneNumber(phoneNumber);
+        if (StringUtils.isNotBlank(phoneNumber)) nbpUserEntity.setPhoneNumber(phoneNumber);
 
         LocalDate birthDate = user.getBirthDate();
-        if (birthDate != null && !birthDate.isAfter(LocalDate.now()))
-            nbpUserEntity.setBirthDate(birthDate);
+        if (birthDate != null && !birthDate.isAfter(LocalDate.now())) nbpUserEntity.setBirthDate(birthDate);
 
         String address = user.getAddress();
         if (StringUtils.isNotBlank(address)) {
-            var addressEntity = addressRepository.findByName(address)
-                    .orElseGet(() -> createAddressEntity(user));
+            var addressEntity = addressRepository.findByName(address).orElseGet(() -> createAddressEntity(user));
             nbpUserEntity.setAddressId(addressEntity.getId());
         }
 
         String roleUser = "ROLE_USER";
-        var roleEntity = nbpRoleRepository.findByName(roleUser)
-                .orElseThrow(() -> new NotFoundException(String.format("Role with name %s does not exist.", roleUser)));
+        var roleEntity = nbpRoleRepository.findByName(roleUser).orElseThrow(() -> new NotFoundException(String.format("Role with name %s does not exist.", roleUser)));
         nbpUserEntity.setRoleId(roleEntity.getId());
 
         return nbpUserEntity;
@@ -170,8 +167,7 @@ public ResponseEntity delete(Long userId) {
 
         String city = user.getCity();
         if (StringUtils.isNotBlank(city)) {
-            var cityEntity = cityRepository.findByName(city)
-                    .orElseGet(() -> createCityEntity(user));
+            var cityEntity = cityRepository.findByName(city).orElseGet(() -> createCityEntity(user));
             addressEntity.setCityId(cityEntity.getId());
         }
 
@@ -184,15 +180,13 @@ public ResponseEntity delete(Long userId) {
         cityEntity.setName(user.getCity());
 
         var postcode = user.getPostcode();
-        if (postcode != null)
-            cityEntity.setPostcode(postcode);
+        if (postcode != null) cityEntity.setPostcode(postcode);
 
         cityRepository.save(cityEntity);
         return cityEntity;
     }
 
     private NbpUserEntity findUserById(Long id) {
-        return nbpUserRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("User with id %d does not exist.", id)));
+        return nbpUserRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("User with id %d does not exist.", id)));
     }
 }

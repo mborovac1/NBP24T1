@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/cinemaUsers")
@@ -33,10 +32,4 @@ public class CinemaUserController {
     public ResponseEntity getKorisnikByEmail(@PathVariable String email) {
         return cinemaUserService.getKorisnikByEmail(email);
     }
-
-
-
-
-
-
 }

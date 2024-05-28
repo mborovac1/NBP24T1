@@ -14,7 +14,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.time.LocalDate;
 import java.time.Month;
 
-@OpenAPIDefinition(info = @Info(title = "NBP24T1"))
 @EnableJpaRepositories
 @SpringBootApplication
 public class Main {

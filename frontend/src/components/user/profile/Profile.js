@@ -38,7 +38,7 @@ const PasswordChangeModal = ({ open, onClose }) => {
               newPassword: newPassword,
             };
   
-          const response = await fetch(`${BASE_URL}/auth/reset-password`, {
+          const response = await fetch(`${BASE_URL}/api/auth/reset-password`, {
               method: "POST",
               headers: { 
                   Authorization: `Bearer ${token}`,

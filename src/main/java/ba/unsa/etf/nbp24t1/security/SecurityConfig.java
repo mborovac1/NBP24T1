@@ -3,14 +3,20 @@ package ba.unsa.etf.nbp24t1.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -19,6 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static ba.unsa.etf.nbp24t1.entity.Auth.Role.ADMIN;
 import static ba.unsa.etf.nbp24t1.entity.Auth.Role.USER;
@@ -31,100 +38,60 @@ import static org.springframework.http.HttpMethod.*;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+    private static final String[] ADMIN_ROUTES = new String[]{
+            "/api/nbpUsers/",
+            "/api/cinemaUsers/users",
+            "/api/nbpUsers/add",
+            "/api/nbpUsers/delete",
+            "/api/movies/delete/{id}",
+            "/api/movies/add",
+            "/api/movies/report/last-7-days/pdf"
+    };
+    private static final String[] USER_ROUTES = new String[]{
+
+    };
+    private static final String[] ADMIN_USER_ROUTES = new String[]{
+
+    };
+
     private final ba.unsa.etf.nbp24t1.security.AuthenticationFilter authenticationFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final UserDetailsService userDetailsService;
     private final LogoutHandler logoutHandler;
-
-   /* @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors()
-                .and().csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers(OPTIONS, "/**").permitAll()
-                // Auth
-                .requestMatchers("/auth/reset-password").permitAll()
-                .requestMatchers("/auth/forgot-password/{email}").permitAll()
-                .requestMatchers("/auth/login").permitAll()
-                .requestMatchers("/auth/register").permitAll()
-                .requestMatchers("/auth/addUser").permitAll()
-                .requestMatchers("/auth/logout/{email}").permitAll()
-                .requestMatchers("/api/nbpUsers/delete").permitAll()
-                // FilmController
-                .requestMatchers(POST, "/dodajFilm").hasRole(ADMIN.name())
-                .requestMatchers(GET, "/films").hasAnyRole(ADMIN.name())
-                .requestMatchers(GET, "/filmovi").permitAll()
-                .requestMatchers(GET, "/film/{id}").hasRole(USER.name())
-                .requestMatchers(PUT, "/azurirajFilm").hasRole(ADMIN.name())
-                .requestMatchers(DELETE, "/deleteFilm/{id}").hasRole(ADMIN.name())
-                // KartaController
-                .requestMatchers(POST, "/dodajKartu/{korisnik_id}/{film_id}/{sala_id}/{brojSjedista}").hasRole(USER.name())
-                .requestMatchers(GET, "/karte").hasAnyRole(USER.name(), ADMIN.name())
-                .requestMatchers(GET, "/karte/sjediste/{broj_sale}/{broj_sjedista}").hasAnyRole(ADMIN.name())
-                .requestMatchers(GET, "/karta/{id}").hasAnyRole(ADMIN.name(), USER.name())
-                .requestMatchers(GET, "/karte/{id}").hasAnyRole(ADMIN.name())
-                .requestMatchers(DELETE, "/obrisiKartu/{id}").hasRole(ADMIN.name())
-                // KorisnikController
-                .requestMatchers(POST, "/dodajKorisnika").hasRole(ADMIN.name())
-                .requestMatchers(GET, "/korisnici").hasRole(ADMIN.name())
-                .requestMatchers(GET, "/korisnik/{id}").hasRole(ADMIN.name())
-                .requestMatchers(GET, "/korisnik/email/{email}").hasAnyRole(ADMIN.name(), USER.name())
-                .requestMatchers(GET, "/user/email/{email}").hasAnyRole(ADMIN.name(), USER.name())
-                .requestMatchers(PUT, "/azurirajKorisnika/{id}").hasRole(ADMIN.name())
-                .requestMatchers(DELETE, "/obrisiKorisnika/{id}").hasRole(ADMIN.name())
-                // SalaController
-                .requestMatchers(POST, "/dodajSalu").hasRole(ADMIN.name())
-                .requestMatchers(GET, "/sala/{brojSale}").hasRole(USER.name())
-                .requestMatchers(GET, "/sale").hasAnyRole(ADMIN.name(), USER.name())
-                .requestMatchers(DELETE, "/deleteSale").hasRole(ADMIN.name())
-                .requestMatchers(DELETE, "/deleteSalu/{id}").hasRole(ADMIN.name())
-                .requestMatchers(PUT, "/sale/film/{id}").hasRole(ADMIN.name())
-                .requestMatchers(POST, "/dodajSjediste/{sala_id}").hasRole(USER.name())
-                // SjedisteController
-                .requestMatchers(POST, "/dodajSjediste").hasRole(USER.name())
-                .requestMatchers(GET, "/sjedista").hasRole(ADMIN.name())
-                .requestMatchers(GET, "/sjedista/{id}").hasRole(ADMIN.name())
-                .requestMatchers(GET, "/sjedista/sala/{brojSale}").hasRole(ADMIN.name())
-                .requestMatchers(GET, "/brojSjedista/{brojSjedista}").hasRole(ADMIN.name())
-                .requestMatchers(DELETE, "/deleteSjediste/{id}").hasRole(ADMIN.name())
-                .requestMatchers(DELETE, "/deleteSjedista").hasRole(ADMIN.name())
-                // ZanrController
-                .requestMatchers(GET, "/zanrovi/").permitAll()
-                .requestMatchers(PUT, "/zanrovi/film/{id}").hasRole(ADMIN.name())
-                // Logout
-                .anyRequest()
-                .authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//                .logout()
-//                .logoutUrl("/auth/logout")
-//                .addLogoutHandler(logoutHandler)
-//                .logoutSuccessHandler(((request, response, authentication) -> SecurityContextHolder.clearContext()));
-        return http.build();
-    }*/
+    private final JwtEntryPoint jwtEntryPoint;
+    AuthenticationManager authenticationManager;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf().disable()
-                .cors().disable()
-                .authorizeRequests()
-                .requestMatchers("/auth/register").permitAll()
-                .requestMatchers("/api/**").permitAll()
-                .requestMatchers("/users").hasAnyAuthority("USER", "ADMIN")
-                .and()
-                .formLogin()
-                .and()
-                .build();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        authenticationManager = authenticationManagerBuilder.build();
+        http.cors().and().csrf().disable().exceptionHandling()
+                .authenticationEntryPoint(jwtEntryPoint).and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeHttpRequests()
+                .requestMatchers(ADMIN_ROUTES).hasRole(ADMIN.name())
+                .requestMatchers(USER_ROUTES).hasRole(USER.name())
+                .requestMatchers(ADMIN_USER_ROUTES).hasAnyRole(USER.name(), ADMIN.name())
+                .requestMatchers("/**").permitAll().anyRequest().permitAll().and().authenticationManager(authenticationManager);
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
 

@@ -5,6 +5,8 @@ import ba.unsa.etf.nbp24t1.exception.AlreadyExistsException;
 import ba.unsa.etf.nbp24t1.exception.NotFoundException;
 import ba.unsa.etf.nbp24t1.model.User;
 import ba.unsa.etf.nbp24t1.service.NbpUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ public class NbpUserController {
     private final NbpUserService nbpUserService;
 
     @GetMapping("/")
+    @Operation(summary = "List of all registered users", security = @SecurityRequirement(name = "bearerAuth"))
     public List<NbpUserEntity> getAll() {
         return nbpUserService.getAll();
     }
@@ -48,12 +51,9 @@ public class NbpUserController {
     }
 
     @DeleteMapping("/delete")
+    @Operation(summary = "Delete registered user", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<?> delete(@RequestParam("userId") Long userId) {
         return nbpUserService.delete(userId);
-        /*return handleResponse(() -> {
-            nbpUserService.delete(id);
-            return String.format("User with id %d successfully deleted.", id);
-        });*/
     }
 
     private ResponseEntity<?> handleResponse(Action action) {

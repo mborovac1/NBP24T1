@@ -150,7 +150,7 @@ function RegisterDefault() {
       const role = "USER"; // since role is always "USER"
 
       const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
-      const response = await fetch(`${BASE_URL}/auth/register`, {
+      const response = await fetch(`${BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
