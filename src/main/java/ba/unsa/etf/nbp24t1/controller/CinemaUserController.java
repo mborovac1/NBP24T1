@@ -3,6 +3,8 @@ package ba.unsa.etf.nbp24t1.controller;
 import ba.unsa.etf.nbp24t1.entity.CinemaUserEntity;
 import ba.unsa.etf.nbp24t1.entity.NbpUserEntity;
 import ba.unsa.etf.nbp24t1.service.CinemaUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ public class CinemaUserController {
     }
 
     @GetMapping(value = "/user/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Users email", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity getKorisnikByEmail(@PathVariable String email) {
         return cinemaUserService.getKorisnikByEmail(email);
     }

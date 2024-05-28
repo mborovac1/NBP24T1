@@ -45,13 +45,22 @@ public class SecurityConfig {
             "/api/nbpUsers/delete",
             "/api/movies/delete/{id}",
             "/api/movies/add",
-            "/api/movies/report/last-7-days/pdf"
+            "/api/movies/report/last-7-days/pdf",
+            "/api/movieGenres/add",
+            "/api/membership/{membership_id}",
+            "/api/updateMembership/{membership_id}/{type}"
+
     };
     private static final String[] USER_ROUTES = new String[]{
 
+
     };
     private static final String[] ADMIN_USER_ROUTES = new String[]{
-
+            "/api/addresses/address/{addressId}",
+            "/api/cinemaUsers/user/{email}",
+            "/api/halls/",
+            "/api/tickets/",
+            "/api/seats/"
     };
 
     private final ba.unsa.etf.nbp24t1.security.AuthenticationFilter authenticationFilter;
