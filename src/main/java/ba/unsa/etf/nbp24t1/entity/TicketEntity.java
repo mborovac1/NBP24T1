@@ -38,8 +38,8 @@ public class TicketEntity {
     @Column(name = "PRICE", nullable = false)
     private Double price;
 
-    @Column(name = "MOVIE_ID")
-    private Long movie_id;
+    @Column(name = "APPOINTMENT_ID")
+    private Long appointment_id;
 
     @Column(name = "SEAT_ID")
     private Long cityId;

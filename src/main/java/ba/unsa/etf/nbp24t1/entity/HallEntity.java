@@ -24,6 +24,7 @@ public class HallEntity {
 
     @NotEmpty(message = "Hall capacity must exist.")
     @PositiveOrZero(message = "Hall capacity must be a non-negative number.")
+    @Column(name = "CAPACITY")
     private Integer capacity;
 
     @NotEmpty(message = "Hall number must exist.")

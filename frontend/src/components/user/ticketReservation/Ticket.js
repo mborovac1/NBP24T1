@@ -18,6 +18,11 @@ const Ticket = () => {
   const [izabranaSalaId, setIzabranaSalaId] = useState(1);
   const [saleAll, setSaleAll] = useState({});
 
+  const [movieHalls, setMovieHalls] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [selectedHall, setSelectedHall] = useState("");
+  const [selectedAppointment, setSelectedAppointment] = useState("");
+
   const fetchSjedistaOdabraneSale = async (trenutnaSala) => {
     const token = localStorage.getItem("access_token");
     try {
@@ -35,17 +40,24 @@ const Ticket = () => {
     const fetchSale = async () => {
       const token = localStorage.getItem("access_token");
       try {
+        //pronalazenje termina i sala za film
         const BASE_URL = process.env.REACT_APP_BASE_URL;
-        const response = await axios.get(`${BASE_URL}/movie/${idFilma}`, {
+        const response = await axios.get(`${BASE_URL}/api/appointments/${idFilma}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        let salaIzOdgovora = response.data.sale.map((e) => e.brojSale);
+        console.log("Response", response.data);
+        const hallIds = [...new Set(response.data.map((appointment) => appointment.hallId))];
+        setMovieHalls(hallIds);
+        const sortedAppointments = response.data.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+        setAppointments(sortedAppointments);
+
+        /*let salaIzOdgovora = response.data.sale.map((e) => e.brojSale);
         let idSaleIzOdgovora = response.data.sale.map((e) => e.id);
         setSaleAll(response.data.sale);
         setSaleFilma(salaIzOdgovora);
         setIzabranaSala(salaIzOdgovora[0]);
         setIzabranaSalaId(idSaleIzOdgovora[0]);
-        fetchSjedistaOdabraneSale(salaIzOdgovora[0]);
+        fetchSjedistaOdabraneSale(salaIzOdgovora[0]);*/
       } catch (error) {
         console.error("Failed to fetch movies:", error);
       }
@@ -141,22 +153,60 @@ const Ticket = () => {
     window.location.href = "/moviesUser";
   };
 
+  const handleChangeAppointment = (event) => {
+    setSelectedAppointment(event.target.value);
+  };
+
+  const handleChangeHall = (event) => {
+    setSelectedHall(event.target.value);
+    const filteredAppointments = appointments.filter((appointment) => appointment.hallId === event.target.value);
+    if (filteredAppointments.length > 0) {
+      setSelectedAppointment(filteredAppointments[0].id);
+    } else {
+      setSelectedAppointment("");
+    }
+  };
+
+  const filteredAppointments = appointments.filter((appointment) => appointment.hallId === selectedHall);
+
   return (
     <>
       <Typography variant="h5" style={{ color: "white", marginTop: "20px" }}>
         Sale:
       </Typography>
       <FormControl style={{ marginTop: "20px" }}>
-        <Select style={{ color: "#2d2d2d", backgroundColor: "white" }} labelId="sale-label" id="sale" name="sale" value={izabranaSala} defaultValue="saleFilma" onChange={handleChangeSala}>
-          {saleFilma.map((e) => {
-            return (
-              <MenuItem style={{ color: "#2d2d2d", backgroundColor: "white" }} value={e}>
-                {e}
-              </MenuItem>
-            );
-          })}
+        <Select style={{ color: "#2d2d2d", backgroundColor: "white" }} labelId="sale-label" id="sale" name="sale" value={selectedHall} onChange={handleChangeHall}>
+          {movieHalls.map((e) => (
+            <MenuItem key={e} style={{ color: "#2d2d2d", backgroundColor: "white" }} value={e}>
+              {e}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
+
+      {selectedHall && (
+        <>
+          <Typography variant="h5" style={{ color: "white", marginTop: "20px" }}>
+            Termini:
+          </Typography>
+          <FormControl style={{ marginTop: "20px" }}>
+            <Select style={{ color: "#2d2d2d", backgroundColor: "white" }} labelId="appointment-label" id="appointment" name="appointment" value={selectedAppointment} onChange={handleChangeAppointment}>
+              {filteredAppointments.map((appointment) => {
+                const startTime = new Date(appointment.startTime);
+                const endTime = new Date(appointment.endTime);
+                const date = startTime.toLocaleDateString();
+                const startTimeString = startTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                const endTimeString = endTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                return (
+                  <MenuItem key={appointment.id} style={{ color: "#2d2d2d", backgroundColor: "white" }} value={appointment.id}>
+                    {`${date} ${startTimeString} - ${endTimeString}`}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </>
+      )}
 
       <Container sx={{ marginTop: "10px", paddingTop: "30px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", backgroundColor: "#2d2d2d" }}>
         <Box sx={{ padding: "10px", backgroundColor: "white", border: "10px solid #ccc", width: "auto" }}>
