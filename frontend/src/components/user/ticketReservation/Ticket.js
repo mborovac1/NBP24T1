@@ -12,8 +12,7 @@ const Ticket = () => {
   const [sjedista, setSjedista] = useState([]);
   const [odabrana, setOdabrana] = useState([]);
   const [reservationSuccess, setReservationSuccess] = useState(false);
-  const [saleFilma, setSaleFilma] = useState([]);
-  const [izabranaSala, setIzabranaSala] = useState(1);
+
   const [korisnik, setKorisnik] = useState({});
   const [izabranaSalaId, setIzabranaSalaId] = useState(1);
   const [saleAll, setSaleAll] = useState({});
@@ -36,24 +35,8 @@ const Ticket = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTakenSeats(response.data);
-      console.log("TAKEN SEATS", response.data);
-      console.log("HallID", hallId);
-      console.log("AppointmentID", appointmentId);
     } catch (error) {
       console.error("Failed to fetch taken seats:", error);
-    }
-  };
-
-  const fetchSjedistaOdabraneSale = async (trenutnaSala) => {
-    const token = localStorage.getItem("access_token");
-    try {
-      const BASE_URL = process.env.REACT_APP_BASE_URL;
-      const response = await axios.get(`${BASE_URL}/sala/${trenutnaSala}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSjedista(response.data.sjedista.map((e) => e.brojSjedista));
-    } catch (error) {
-      console.error("Failed to fetch movies:", error);
     }
   };
 
@@ -67,27 +50,11 @@ const Ticket = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setKorisnik(response.data);
-        //console.log("Korisnik: ", response.data);
         kor = response.data.id;
       } catch (error) {
         console.error("Failed to fetch users:", error);
       }
     };
-
-    /*const fetchHallByNumber = async () => {
-      const token = localStorage.getItem("access_token");
-      try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL;
-        const response = await axios.get(`${BASE_URL}/api/halls/${selectedHall}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setHallByNumber(response.data);
-        console.log("HALL BY NUMBER", response.data);
-      } catch (error) {
-        console.error("Failed to fetch users:", error);
-      }
-    };*/
-
     const fetchSale = async () => {
       const token = localStorage.getItem("access_token");
       try {
@@ -99,7 +66,6 @@ const Ticket = () => {
         console.log("response", response.data);
         const sortedAppointments = response.data.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
         setAppointments(sortedAppointments);
-        //console.log("Response", response.data);
         const hallIds = [...new Set(response.data.map((appointment) => appointment.hallId))];
         //setMovieHalls(hallIds);
         const fetchedData = [];
@@ -115,34 +81,18 @@ const Ticket = () => {
         } catch (error) {
           console.error("Error fetching data:", error);
         }
-
-        /*let salaIzOdgovora = response.data.sale.map((e) => e.brojSale);
-        let idSaleIzOdgovora = response.data.sale.map((e) => e.id);
-        setSaleAll(response.data.sale);
-        setSaleFilma(salaIzOdgovora);
-        setIzabranaSala(salaIzOdgovora[0]);
-        setIzabranaSalaId(idSaleIzOdgovora[0]);
-        fetchSjedistaOdabraneSale(salaIzOdgovora[0]);*/
       } catch (error) {
         console.error("Failed to fetch movies:", error);
       }
     };
 
     fetchKorisnik();
-    //fetchHallByNumber();
     fetchSale();
     if (selectedHallId && selectedAppointment) {
       fetchTakenSeats(selectedHallId, selectedAppointment);
     }
   }, [korisnik, selectedAppointment, selectedHall]);
 
-  /*const handleReservation = (event, currentSeat) => {
-    if (!sjedista.includes(currentSeat)) {
-      if (odabrana.length < kolicinaKarata) {
-        setOdabrana((prevOdabrana) => [...prevOdabrana, currentSeat]);
-      }
-    }
-  };*/
   const handleReservation = (event, currentSeat) => {
     if (!sjedista.includes(currentSeat) && !takenSeats.includes(currentSeat)) {
       if (odabrana.length < kolicinaKarata) {
@@ -158,10 +108,7 @@ const Ticket = () => {
       return;
     }
 
-    //fetch user
-
     //post zahtjevi
-
     for (let i = 0; i < odabrana.length; i++) {
       const postTicket = {
         ticketNumber: 0,
@@ -188,23 +135,13 @@ const Ticket = () => {
     setReservationSuccess(true);
   };
 
-  const handleChangeSala = (event) => {
-    setIzabranaSala(event.target.value);
-    setIzabranaSalaId(saleAll.find((sala) => sala.brojSale === event.target.value).id);
-    fetchSjedistaOdabraneSale(event.target.value);
-  };
-
   const handleClose = () => {
-    fetchSjedistaOdabraneSale(izabranaSala);
     setOdabrana([]);
     setReservationSuccess(false);
   };
 
   const handleCloseSuccess = () => {
-    fetchSjedistaOdabraneSale(izabranaSala);
-    //setOdabrana([]);
     setReservationSuccess(false);
-
     window.location.href = "/moviesUser";
   };
 
