@@ -23,9 +23,15 @@ public class HallController {
         return hallService.getAll();
     }
 
-    @GetMapping("/{hallNumber}")
+    /*@GetMapping("/{hallNumber}")
     @Operation(summary = "Get hall by hall number", security = @SecurityRequirement(name = "bearerAuth"))
     public HallEntity getHallByHallNumber(@PathVariable int hallNumber) {
         return hallService.getHallByHallNumber(hallNumber);
+    }*/
+
+    @GetMapping("/{hallId}")
+    @Operation(summary = "Get hall by hall id", security = @SecurityRequirement(name = "bearerAuth"))
+    public HallEntity getHallById(@PathVariable Long hallId) {
+        return hallService.getHallById(hallId);
     }
 }

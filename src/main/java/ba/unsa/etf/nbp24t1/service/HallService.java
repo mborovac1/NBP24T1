@@ -9,4 +9,6 @@ public interface HallService {
     List<HallEntity> getAll();
 
     HallEntity getHallByHallNumber(Integer hallNumber);
+
+    HallEntity getHallById(Long hallId);
 }

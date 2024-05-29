@@ -22,4 +22,9 @@ public class HallServiceImpl implements HallService {
     public HallEntity getHallByHallNumber(Integer hallNumber) {
         return hallRepository.findByHallNumber(hallNumber);
     }
+
+    @Override
+    public HallEntity getHallById(Long hallId) {
+        return hallRepository.findById(hallId).orElseThrow();
+    }
 }

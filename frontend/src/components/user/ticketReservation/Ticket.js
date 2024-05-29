@@ -21,6 +21,7 @@ const Ticket = () => {
   const [movieHalls, setMovieHalls] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [selectedHall, setSelectedHall] = useState("");
+  const [selectedHallId, setSelectedHallId] = useState("");
   const [selectedAppointment, setSelectedAppointment] = useState("");
   const [selectedMovie, setSelectedMovie] = useState({});
 
@@ -35,6 +36,9 @@ const Ticket = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTakenSeats(response.data);
+      console.log("TAKEN SEATS", response.data);
+      console.log("HallID", hallId);
+      console.log("AppointmentID", appointmentId);
     } catch (error) {
       console.error("Failed to fetch taken seats:", error);
     }
@@ -63,13 +67,14 @@ const Ticket = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setKorisnik(response.data);
+        //console.log("Korisnik: ", response.data);
         kor = response.data.id;
       } catch (error) {
         console.error("Failed to fetch users:", error);
       }
     };
 
-    const fetchHallByNumber = async () => {
+    /*const fetchHallByNumber = async () => {
       const token = localStorage.getItem("access_token");
       try {
         const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -77,11 +82,11 @@ const Ticket = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setHallByNumber(response.data);
-        console.log("HALL BY NUMBER", hallByNumber);
+        console.log("HALL BY NUMBER", response.data);
       } catch (error) {
         console.error("Failed to fetch users:", error);
       }
-    };
+    };*/
 
     const fetchSale = async () => {
       const token = localStorage.getItem("access_token");
@@ -91,11 +96,25 @@ const Ticket = () => {
         const response = await axios.get(`${BASE_URL}/api/appointments/${idFilma}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("Response", response.data);
-        const hallIds = [...new Set(response.data.map((appointment) => appointment.hallId))];
-        setMovieHalls(hallIds);
+        console.log("response", response.data);
         const sortedAppointments = response.data.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
         setAppointments(sortedAppointments);
+        //console.log("Response", response.data);
+        const hallIds = [...new Set(response.data.map((appointment) => appointment.hallId))];
+        //setMovieHalls(hallIds);
+        const fetchedData = [];
+        try {
+          for (const hId of hallIds) {
+            const response = await axios.get(`${BASE_URL}/api/halls/${hId}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+
+            fetchedData.push(response.data);
+          }
+          setMovieHalls(fetchedData);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
 
         /*let salaIzOdgovora = response.data.sale.map((e) => e.brojSale);
         let idSaleIzOdgovora = response.data.sale.map((e) => e.id);
@@ -110,10 +129,10 @@ const Ticket = () => {
     };
 
     fetchKorisnik();
-    fetchHallByNumber();
+    //fetchHallByNumber();
     fetchSale();
-    if (selectedHall && selectedAppointment) {
-      fetchTakenSeats(selectedHall, selectedAppointment);
+    if (selectedHallId && selectedAppointment) {
+      fetchTakenSeats(selectedHallId, selectedAppointment);
     }
   }, [korisnik, selectedAppointment, selectedHall]);
 
@@ -142,22 +161,21 @@ const Ticket = () => {
     //fetch user
 
     //post zahtjevi
-    console.log("ODABRANA", odabrana);
-    console.log("selected hall", selectedHall);
 
     for (let i = 0; i < odabrana.length; i++) {
       const postTicket = {
         ticketNumber: 0,
         seatNumber: odabrana[i],
-        cinemaUserId: 5,
+        //email: email,
         appointmentId: selectedAppointment,
-        hallId: hallByNumber.id,
+        //hallId: hallByNumber.id,
+        hallId: selectedHallId,
       };
       console.log("posttick", postTicket);
       const token = localStorage.getItem("access_token");
       try {
         const BASE_URL = process.env.REACT_APP_BASE_URL;
-        const response = await axios.post(`${BASE_URL}/api/tickets/add`, postTicket, {
+        const response = await axios.post(`${BASE_URL}/api/tickets/add/${korisnik.id}`, postTicket, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log("Final response: ", response.data);
@@ -196,7 +214,9 @@ const Ticket = () => {
 
   const handleChangeHall = (event) => {
     setSelectedHall(event.target.value);
-    const filteredAppointments = appointments.filter((appointment) => appointment.hallId === event.target.value);
+    const currentHallId = movieHalls.find((mh) => mh.hallNumber == event.target.value).id;
+    setSelectedHallId(currentHallId);
+    const filteredAppointments = appointments.filter((appointment) => appointment.hallId === currentHallId);
     if (filteredAppointments.length > 0) {
       setSelectedAppointment(filteredAppointments[0].id);
     } else {
@@ -204,7 +224,7 @@ const Ticket = () => {
     }
   };
 
-  const filteredAppointments = appointments.filter((appointment) => appointment.hallId === selectedHall);
+  const filteredAppointments = appointments.filter((appointment) => appointment.hallId === selectedHallId);
 
   return (
     <>
@@ -214,8 +234,8 @@ const Ticket = () => {
       <FormControl style={{ marginTop: "20px" }}>
         <Select style={{ color: "#2d2d2d", backgroundColor: "white" }} labelId="sale-label" id="sale" name="sale" value={selectedHall} onChange={handleChangeHall}>
           {movieHalls.map((e) => (
-            <MenuItem key={e} style={{ color: "#2d2d2d", backgroundColor: "white" }} value={e}>
-              {e}
+            <MenuItem key={e.id} style={{ color: "#2d2d2d", backgroundColor: "white" }} value={e.hallNumber}>
+              {e.hallNumber}
             </MenuItem>
           ))}
         </Select>

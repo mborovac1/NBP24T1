@@ -9,7 +9,7 @@ public interface TicketService {
 
     List<TicketEntity> getAll();
 
-    ResponseEntity addTicket(TicketEntity ticket);
+    ResponseEntity addTicket(TicketEntity ticket, Long id);
 
     List<Integer> getBookedSeats(Long hallId, Long appointmentId);
 }

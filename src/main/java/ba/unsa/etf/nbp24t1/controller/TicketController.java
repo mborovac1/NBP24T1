@@ -26,10 +26,10 @@ public class TicketController {
         return ticketService.getAll();
     }
 
-    @PostMapping("/add")
+    @PostMapping("/add/{id}")
     @Operation(summary = "Adding new ticket", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity addTicket(@RequestBody TicketEntity ticket) {
-        return ticketService.addTicket(ticket);
+    public ResponseEntity addTicket(@RequestBody TicketEntity ticket, @PathVariable Long id) {
+        return ticketService.addTicket(ticket, id);
     }
 
     @GetMapping("/bookedSeats")
