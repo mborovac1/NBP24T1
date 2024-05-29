@@ -27,22 +27,17 @@ public class TicketEntity {
     @NotEmpty(message = "Ticket number must exist.")
     @Positive(message = "Ticket number must be a positive number.")
     @Column(name = "TICKET_NUMBER", nullable = false)
-    private Integer number;
+    private Integer ticketNumber;
 
-    @JsonFormat(pattern = "HH:mm")
-    @Column(name = "START_TIME", nullable = false)
-    private LocalDateTime startTime;
-
-    @NotEmpty(message = "Ticket price must exist.")
-    @Positive(message = "Ticket price must be a positive number.")
-    @Column(name = "PRICE", nullable = false)
-    private Double price;
 
     @Column(name = "APPOINTMENT_ID")
-    private Long appointment_id;
+    private Long appointmentId;
 
-    @Column(name = "SEAT_ID")
-    private Long cityId;
+    @Column(name = "HALL_ID")
+    private Long hallId;
+
+    @Column(name = "SEAT_NUMBER")
+    private Integer seatNumber;
 
     @Column(name = "CINEMA_USER_ID")
     private Long cinemaUserId;

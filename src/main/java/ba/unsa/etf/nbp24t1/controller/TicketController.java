@@ -1,18 +1,20 @@
 package ba.unsa.etf.nbp24t1.controller;
 
+import ba.unsa.etf.nbp24t1.entity.MovieEntity;
 import ba.unsa.etf.nbp24t1.entity.TicketEntity;
 import ba.unsa.etf.nbp24t1.service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/tickets")
+@CrossOrigin("*")
 @RestController
 public class TicketController {
 
@@ -23,4 +25,17 @@ public class TicketController {
     public List<TicketEntity> getAll() {
         return ticketService.getAll();
     }
+
+    @PostMapping("/add")
+    @Operation(summary = "Adding new ticket", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity addTicket(@RequestBody TicketEntity ticket) {
+        return ticketService.addTicket(ticket);
+    }
+
+    @GetMapping("/bookedSeats")
+    public ResponseEntity<List<Integer>> getBookedSeats(@RequestParam Long hallId, @RequestParam Long appointmentId) {
+        List<Integer> bookedSeats = ticketService.getBookedSeats(hallId, appointmentId);
+        return new ResponseEntity<>(bookedSeats, HttpStatus.OK);
+    }
+
 }

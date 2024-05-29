@@ -22,6 +22,23 @@ const Ticket = () => {
   const [appointments, setAppointments] = useState([]);
   const [selectedHall, setSelectedHall] = useState("");
   const [selectedAppointment, setSelectedAppointment] = useState("");
+  const [selectedMovie, setSelectedMovie] = useState({});
+
+  const [takenSeats, setTakenSeats] = useState([]);
+  const [hallByNumber, setHallByNumber] = useState({});
+
+  const fetchTakenSeats = async (hallId, appointmentId) => {
+    const token = localStorage.getItem("access_token");
+    try {
+      const BASE_URL = process.env.REACT_APP_BASE_URL;
+      const response = await axios.get(`${BASE_URL}/api/tickets/bookedSeats?hallId=${hallId}&appointmentId=${appointmentId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTakenSeats(response.data);
+    } catch (error) {
+      console.error("Failed to fetch taken seats:", error);
+    }
+  };
 
   const fetchSjedistaOdabraneSale = async (trenutnaSala) => {
     const token = localStorage.getItem("access_token");
@@ -37,6 +54,35 @@ const Ticket = () => {
   };
 
   useEffect(() => {
+    let kor = 0;
+    const fetchKorisnik = async () => {
+      const token = localStorage.getItem("access_token");
+      try {
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
+        const response = await axios.get(`${BASE_URL}/api/cinemaUsers/user/${email}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setKorisnik(response.data);
+        kor = response.data.id;
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+
+    const fetchHallByNumber = async () => {
+      const token = localStorage.getItem("access_token");
+      try {
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
+        const response = await axios.get(`${BASE_URL}/api/halls/${selectedHall}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setHallByNumber(response.data);
+        console.log("HALL BY NUMBER", hallByNumber);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+
     const fetchSale = async () => {
       const token = localStorage.getItem("access_token");
       try {
@@ -63,70 +109,61 @@ const Ticket = () => {
       }
     };
 
+    fetchKorisnik();
+    fetchHallByNumber();
     fetchSale();
-  }, [korisnik]);
+    if (selectedHall && selectedAppointment) {
+      fetchTakenSeats(selectedHall, selectedAppointment);
+    }
+  }, [korisnik, selectedAppointment, selectedHall]);
 
-  const handleReservation = (event, currentSeat) => {
+  /*const handleReservation = (event, currentSeat) => {
     if (!sjedista.includes(currentSeat)) {
+      if (odabrana.length < kolicinaKarata) {
+        setOdabrana((prevOdabrana) => [...prevOdabrana, currentSeat]);
+      }
+    }
+  };*/
+  const handleReservation = (event, currentSeat) => {
+    if (!sjedista.includes(currentSeat) && !takenSeats.includes(currentSeat)) {
       if (odabrana.length < kolicinaKarata) {
         setOdabrana((prevOdabrana) => [...prevOdabrana, currentSeat]);
       }
     }
   };
 
-  const handleSubmit = (event) => {
-    //const token = localStorage.getItem("access_token");
+  const handleSubmit = async (event) => {
+    //broj odabranih karata
     if (Number(odabrana.length) !== Number(kolicinaKarata)) {
       alert(`Molimo odaberite tacno ${kolicinaKarata} sjedista.`);
       return;
     }
+
+    //fetch user
+
+    //post zahtjevi
+    console.log("ODABRANA", odabrana);
+    console.log("selected hall", selectedHall);
+
     for (let i = 0; i < odabrana.length; i++) {
-      const post = {
-        brojSjedista: odabrana[i],
+      const postTicket = {
+        ticketNumber: 0,
+        seatNumber: odabrana[i],
+        cinemaUserId: 5,
+        appointmentId: selectedAppointment,
+        hallId: hallByNumber.id,
       };
-
-      let kor = 0;
-
-      const fetchKorisnik = async () => {
-        const token = localStorage.getItem("access_token");
-        try {
-          const BASE_URL = process.env.REACT_APP_BASE_URL;
-          const response = await axios.get(`${BASE_URL}/user/email/${email}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setKorisnik(response.data);
-          kor = response.data.id;
-        } catch (error) {
-          console.error("Failed to fetch users:", error);
-        }
-      };
-      fetchKorisnik();
-
-      const submitSjedista = async () => {
-        const token = localStorage.getItem("access_token");
-        try {
-          const BASE_URL = process.env.REACT_APP_BASE_URL;
-          const response = await axios.post(`${BASE_URL}/dodajSjediste/${izabranaSalaId}`, post, { headers: { Authorization: `Bearer ${token}` } });
-        } catch (error) {
-          console.error("Failed to fetch sjedista:", error);
-        }
-      };
-
-      const submitKartu = async () => {
-        const token = localStorage.getItem("access_token");
-        try {
-          const BASE_URL = process.env.REACT_APP_BASE_URL;
-
-          const response = await axios.post(`${BASE_URL}/dodajKartu/${kor}/${idFilma}/${izabranaSalaId}/${odabrana[i]}`, post, { headers: { Authorization: `Bearer ${token}` } });
-        } catch (error) {
-          console.error("Failed to fetch sjedista:", error);
-        }
-      };
-
-      submitSjedista().then(() => {
-        submitKartu();
-      });
-      //submitKartu();
+      console.log("posttick", postTicket);
+      const token = localStorage.getItem("access_token");
+      try {
+        const BASE_URL = process.env.REACT_APP_BASE_URL;
+        const response = await axios.post(`${BASE_URL}/api/tickets/add`, postTicket, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("Final response: ", response.data);
+      } catch (error) {
+        console.log("Error:", error);
+      }
     }
 
     // Show the reservation success message
@@ -216,8 +253,9 @@ const Ticket = () => {
                 {Array.from(Array(10)).map((_, col) => {
                   const seatNumber = row * 10 + col + 1;
                   const isSeatSelected = odabrana.includes(seatNumber) || sjedista.includes(seatNumber);
-                  const seatColor = isSeatSelected ? "red" : "blue";
-                  const isSeatDisabled = isSeatSelected || odabrana.length >= kolicinaKarata;
+                  const isSeatTaken = takenSeats.includes(seatNumber); // Check if seat is taken
+                  const seatColor = isSeatSelected ? "red" : isSeatTaken ? "grey" : "blue"; // Mark as grey if taken
+                  const isSeatDisabled = isSeatSelected || isSeatTaken || odabrana.length >= kolicinaKarata; // Disable if selected or taken
                   return (
                     <Grid key={col} item sx={{ marginLeft: 2 }}>
                       <WeekendIcon style={{ color: seatColor, pointerEvents: isSeatDisabled ? "none" : "auto" }} onClick={(e) => handleReservation(e, seatNumber)} />
@@ -228,6 +266,7 @@ const Ticket = () => {
             ))}
           </Grid>
         </Box>
+
         <Typography variant="body1" sx={{ marginTop: 2, fontWeight: "bold", marginBottom: 2 }}>
           ODABRANA SJEDISTA: {odabrana.join(", ")}
         </Typography>

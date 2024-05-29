@@ -5,10 +5,7 @@ import ba.unsa.etf.nbp24t1.service.HallService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +21,11 @@ public class HallController {
     @Operation(summary = "Get all halls", security = @SecurityRequirement(name = "bearerAuth"))
     public List<HallEntity> getAll() {
         return hallService.getAll();
+    }
+
+    @GetMapping("/{hallNumber}")
+    @Operation(summary = "Get hall by hall number", security = @SecurityRequirement(name = "bearerAuth"))
+    public HallEntity getHallByHallNumber(@PathVariable int hallNumber) {
+        return hallService.getHallByHallNumber(hallNumber);
     }
 }

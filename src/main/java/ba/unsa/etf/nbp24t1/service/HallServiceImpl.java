@@ -17,4 +17,9 @@ public class HallServiceImpl implements HallService {
     public List<HallEntity> getAll() {
         return hallRepository.findAll();
     }
+
+    @Override
+    public HallEntity getHallByHallNumber(Integer hallNumber) {
+        return hallRepository.findByHallNumber(hallNumber);
+    }
 }

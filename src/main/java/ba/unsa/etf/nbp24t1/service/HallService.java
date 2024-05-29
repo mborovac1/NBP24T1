@@ -7,4 +7,6 @@ import java.util.List;
 public interface HallService {
 
     List<HallEntity> getAll();
+
+    HallEntity getHallByHallNumber(Integer hallNumber);
 }
