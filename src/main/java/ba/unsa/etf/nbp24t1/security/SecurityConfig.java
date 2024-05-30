@@ -46,6 +46,7 @@ public class SecurityConfig {
             "/api/movies/delete/{id}",
             "/api/movies/add",
             "/api/movies/report/last-7-days/pdf",
+            "/api/movies/report/price/pdf",
             "/api/movieGenres/add",
             "/api/membership/{membership_id}",
             "/api/updateMembership/{membership_id}/{type}"

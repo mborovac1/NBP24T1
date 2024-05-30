@@ -7,7 +7,7 @@ const GenerateReport = () => {
     if (reportType === "last7Days") {
       await generateReport("/api/movies/report/last-7-days/pdf", "movies_report_last_7_days.pdf");
     } else if (reportType === "price") {
-      alert("Price report generation is not implemented yet.");
+        await generateReport("/api/movies/report/price/pdf", "price_report_last_7_days.pdf");
     }
   };
 

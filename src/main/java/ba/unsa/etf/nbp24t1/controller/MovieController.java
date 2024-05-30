@@ -52,4 +52,18 @@ public class MovieController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(bis));
     }
+
+    @GetMapping("/report/price/pdf")
+    @Operation(summary = "Downloading price report pdf", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<InputStreamResource> getPriceReportPdf() {
+        ByteArrayInputStream bis = movieService.generatePriceReportPdf();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=price_report.pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
+    }
 }

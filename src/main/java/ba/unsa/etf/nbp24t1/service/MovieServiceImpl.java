@@ -1,10 +1,12 @@
 package ba.unsa.etf.nbp24t1.service;
 
+import ba.unsa.etf.nbp24t1.projection.PriceReportProjection;
 import ba.unsa.etf.nbp24t1.entity.MovieEntity;
 import ba.unsa.etf.nbp24t1.entity.MovieGenreEntity;
 import ba.unsa.etf.nbp24t1.exception.NotFoundException;
 import ba.unsa.etf.nbp24t1.repository.MovieGenreRepository;
 import ba.unsa.etf.nbp24t1.repository.MovieRepository;
+import ba.unsa.etf.nbp24t1.repository.TicketRepository;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -34,6 +36,7 @@ public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
 
     private final MovieGenreRepository movieGenreRepository;
+    private final TicketRepository ticketRepository;
 
     @Override
     public List<MovieEntity> getAll() {
@@ -131,6 +134,60 @@ public class MovieServiceImpl implements MovieService {
             table.addCell(new Cell().add(new Paragraph(movie.getDescription())));
             //table.addCell(new Cell().add(new Paragraph(movie.getCreatedAt().format(formatter))));
         }
+
+        document.add(table);
+        document.close();
+
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    private List<PriceReportProjection> getPriceReport() {
+        return ticketRepository.getPriceReportData(LocalDateTime.now().minusDays(7));
+    }
+
+    public ByteArrayInputStream generatePriceReportPdf() {
+        List<PriceReportProjection> priceReport = getPriceReport();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PdfWriter writer = new PdfWriter(out);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+
+        // Title
+        Paragraph title = new Paragraph("Tickets purchased in last 7 days")
+                .setFontSize(18)
+                .setBold()
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontColor(ColorConstants.BLUE);
+        document.add(title);
+        document.add(new Paragraph(" "));
+
+        // Table
+        float[] columnWidths = {3, 1, 1, 2};
+        Table table = new Table(UnitValue.createPercentArray(columnWidths));
+        table.setWidth(UnitValue.createPercentValue(100));
+
+        // Table Header
+        table.addHeaderCell(new Cell().add(new Paragraph("Movie name")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addHeaderCell(new Cell().add(new Paragraph("Movie price")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addHeaderCell(new Cell().add(new Paragraph("User ID")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addHeaderCell(new Cell().add(new Paragraph("Time of projection")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+
+        // Date Formatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+        // Table Data
+        double sum = 0;
+        for (PriceReportProjection priceReportProjection : priceReport) {
+            table.addCell(new Cell().add(new Paragraph(priceReportProjection.getMovieName())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(priceReportProjection.getMoviePrice()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(priceReportProjection.getUserId()))));
+            table.addCell(new Cell().add(new Paragraph(priceReportProjection.getAppointmentTime().format(formatter))));
+            sum += priceReportProjection.getMoviePrice();
+        }
+
+        table.addCell(new Cell().add(new Paragraph("Total price")));
+        table.addCell(new Cell().add(new Paragraph(String.valueOf(sum))));
 
         document.add(table);
         document.close();
