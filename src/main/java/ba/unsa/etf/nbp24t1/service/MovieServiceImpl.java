@@ -134,7 +134,7 @@ public class MovieServiceImpl implements MovieService {
             table.addCell(new Cell().add(new Paragraph(movie.getName())));
             table.addCell(new Cell().add(new Paragraph(movie.getDuration().toString())));
             table.addCell(new Cell().add(new Paragraph(movie.getDescription())));
-            //table.addCell(new Cell().add(new Paragraph(movie.getCreatedAt().format(formatter))));
+            table.addCell(new Cell().add(new Paragraph(movie.getCreatedAt().format(formatter))));
         }
 
         document.add(table);
@@ -146,7 +146,7 @@ public class MovieServiceImpl implements MovieService {
     private List<PriceReportProjection> getPriceReport() {
         return ticketRepository.getPriceReportData(LocalDateTime.now().minusDays(7));
     }
-    
+
     public ByteArrayInputStream generatePriceReportPdf() {
         List<PriceReportProjection> priceReport = getPriceReport();
 
