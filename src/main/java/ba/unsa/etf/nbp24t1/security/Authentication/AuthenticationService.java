@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -158,8 +159,7 @@ public class AuthenticationService {
         }
     }
 
-
-
+    @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new NotFoundException("Email adresa je već u upotrebi");
@@ -181,26 +181,21 @@ public class AuthenticationService {
 
         var newCity = new CityEntity();
         Optional<CityEntity> existingCity = cityRepository.findByName(request.getCityName());
-        //Optional<CityEntity> existingCity = cityRepository.findByName("Sarajevo");
         if (existingCity.isPresent()) {
             newCity = existingCity.get();
         }
         else {
-//            newCity.setName("Sarajevo");
-//            newCity.setPostcode(71000);
             newCity.setName(request.getCityName());
             newCity.setPostcode(request.getPostcode());
             cityRepository.save(newCity);
         }
 
         var newAddress = new AddressEntity();
-        //Optional<AddressEntity> existingAddress = addressRepository.findByName("Đoke Mazalica 2");
         Optional<AddressEntity> existingAddress = addressRepository.findByName(request.getAddressName());
         if (existingAddress.isPresent()) {
             newAddress = existingAddress.get();
         }
         else {
-            //newAddress.setName("Sarajevo");
             newAddress.setName(request.getAddressName());
             newAddress.setCityId(newCity.getId());
             addressRepository.save(newAddress);
