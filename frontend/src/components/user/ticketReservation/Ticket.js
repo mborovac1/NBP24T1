@@ -64,8 +64,12 @@ const Ticket = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log("response", response.data);
-        const sortedAppointments = response.data.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+        const now = new Date();
+        const futureAppointments = response.data.filter(appointment => new Date(appointment.startTime) > now);
+        const sortedAppointments = futureAppointments.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
         setAppointments(sortedAppointments);
+
         const hallIds = [...new Set(response.data.map((appointment) => appointment.hallId))];
         //setMovieHalls(hallIds);
         const fetchedData = [];
