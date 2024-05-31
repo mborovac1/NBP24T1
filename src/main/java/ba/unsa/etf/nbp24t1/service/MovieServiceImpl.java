@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -37,6 +38,7 @@ public class MovieServiceImpl implements MovieService {
 
     private final MovieGenreRepository movieGenreRepository;
     private final TicketRepository ticketRepository;
+    private final MembershipService membershipService;
 
     @Override
     public List<MovieEntity> getAll() {
@@ -145,6 +147,110 @@ public class MovieServiceImpl implements MovieService {
         return ticketRepository.getPriceReportData(LocalDateTime.now().minusDays(7));
     }
 
+//    public ByteArrayInputStream generatePriceReportPdf() {
+//        List<PriceReportProjection> priceReport = getPriceReport();
+//
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        PdfWriter writer = new PdfWriter(out);
+//        PdfDocument pdf = new PdfDocument(writer);
+//        Document document = new Document(pdf);
+//
+//        // Title
+//        Paragraph title = new Paragraph("Tickets purchased in last 7 days")
+//                .setFontSize(18)
+//                .setBold()
+//                .setTextAlignment(TextAlignment.CENTER)
+//                .setFontColor(ColorConstants.BLUE);
+//        document.add(title);
+//        document.add(new Paragraph(" "));
+//
+//        // Table
+//        float[] columnWidths = {3, 1, 1, 2};
+//        Table table = new Table(UnitValue.createPercentArray(columnWidths));
+//        table.setWidth(UnitValue.createPercentValue(100));
+//
+//        // Table Header
+//        table.addHeaderCell(new Cell().add(new Paragraph("Movie name")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+//        table.addHeaderCell(new Cell().add(new Paragraph("Movie price")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+//        table.addHeaderCell(new Cell().add(new Paragraph("User ID")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+//        table.addHeaderCell(new Cell().add(new Paragraph("Time of projection")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+//
+//        // Date Formatter
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+//
+//        // Table Data
+//        double sum = 0;
+//        for (PriceReportProjection priceReportProjection : priceReport) {
+//            table.addCell(new Cell().add(new Paragraph(priceReportProjection.getMovieName())));
+//            table.addCell(new Cell().add(new Paragraph(String.valueOf(priceReportProjection.getMoviePrice()))));
+//            table.addCell(new Cell().add(new Paragraph(String.valueOf(priceReportProjection.getUserId()))));
+//            table.addCell(new Cell().add(new Paragraph(priceReportProjection.getAppointmentTime().format(formatter))));
+//            sum += priceReportProjection.getMoviePrice();
+//        }
+//
+//        table.addCell(new Cell().add(new Paragraph("Total price")));
+//        table.addCell(new Cell().add(new Paragraph(String.valueOf(sum))));
+//
+//        document.add(table);
+//        document.close();
+//
+//        return new ByteArrayInputStream(out.toByteArray());
+//    }
+
+//    public ByteArrayInputStream generatePriceReportPdf() {
+//        List<PriceReportProjection> priceReport = getPriceReport();
+//
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        PdfWriter writer = new PdfWriter(out);
+//        PdfDocument pdf = new PdfDocument(writer);
+//        Document document = new Document(pdf);
+//
+//        // Title
+//        Paragraph title = new Paragraph("Tickets purchased in last 7 days")
+//                .setFontSize(18)
+//                .setBold()
+//                .setTextAlignment(TextAlignment.CENTER)
+//                .setFontColor(ColorConstants.BLUE);
+//        document.add(title);
+//        document.add(new Paragraph(" "));
+//
+//        // Table
+//        float[] columnWidths = {3, 1, 1, 2};
+//        Table table = new Table(UnitValue.createPercentArray(columnWidths));
+//        table.setWidth(UnitValue.createPercentValue(100));
+//
+//        // Table Header
+//        table.addHeaderCell(new Cell().add(new Paragraph("Movie name")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+//        table.addHeaderCell(new Cell().add(new Paragraph("Movie price")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+//        table.addHeaderCell(new Cell().add(new Paragraph("User ID")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+//        table.addHeaderCell(new Cell().add(new Paragraph("Time of projection")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+//
+//        // Date Formatter
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+//        DecimalFormat decimalFormat = new DecimalFormat("#.0");
+//
+//        // Table Data
+//        double sum = 0;
+//        for (PriceReportProjection priceReportProjection : priceReport) {
+//            double discount = membershipService.getDiscountByUserId(priceReportProjection.getUserId());
+//            double discountedPrice = priceReportProjection.getMoviePrice() * (1 - discount / 100);
+//
+//            table.addCell(new Cell().add(new Paragraph(priceReportProjection.getMovieName())));
+//            table.addCell(new Cell().add(new Paragraph(String.valueOf(decimalFormat.format(discountedPrice)))));
+//            table.addCell(new Cell().add(new Paragraph(String.valueOf(priceReportProjection.getUserId()))));
+//            table.addCell(new Cell().add(new Paragraph(priceReportProjection.getAppointmentTime().format(formatter))));
+//            sum += discountedPrice;
+//        }
+//
+//        table.addCell(new Cell().add(new Paragraph("Total price")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+//        table.addCell(new Cell().add(new Paragraph(decimalFormat.format((sum)))).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+//
+//        document.add(table);
+//        document.close();
+//
+//        return new ByteArrayInputStream(out.toByteArray());
+//    }
+
     public ByteArrayInputStream generatePriceReportPdf() {
         List<PriceReportProjection> priceReport = getPriceReport();
 
@@ -163,31 +269,42 @@ public class MovieServiceImpl implements MovieService {
         document.add(new Paragraph(" "));
 
         // Table
-        float[] columnWidths = {3, 1, 1, 2};
+        float[] columnWidths = {3, 1, 1, 1, 2};
         Table table = new Table(UnitValue.createPercentArray(columnWidths));
         table.setWidth(UnitValue.createPercentValue(100));
 
         // Table Header
         table.addHeaderCell(new Cell().add(new Paragraph("Movie name")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
-        table.addHeaderCell(new Cell().add(new Paragraph("Movie price")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addHeaderCell(new Cell().add(new Paragraph("Original price")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addHeaderCell(new Cell().add(new Paragraph("Discounted price")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
         table.addHeaderCell(new Cell().add(new Paragraph("User ID")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
         table.addHeaderCell(new Cell().add(new Paragraph("Time of projection")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
 
         // Date Formatter
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        DecimalFormat decimalFormat = new DecimalFormat("#.0");
 
         // Table Data
-        double sum = 0;
+        double sumOriginal = 0;
+        double sumDiscounted = 0;
         for (PriceReportProjection priceReportProjection : priceReport) {
+            double discount = membershipService.getDiscountByUserId(priceReportProjection.getUserId());
+            double originalPrice = priceReportProjection.getMoviePrice();
+            double discountedPrice = originalPrice * (1 - discount / 100);
+
             table.addCell(new Cell().add(new Paragraph(priceReportProjection.getMovieName())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(priceReportProjection.getMoviePrice()))));
+            table.addCell(new Cell().add(new Paragraph(decimalFormat.format(originalPrice))));
+            table.addCell(new Cell().add(new Paragraph(decimalFormat.format(discountedPrice))));
             table.addCell(new Cell().add(new Paragraph(String.valueOf(priceReportProjection.getUserId()))));
             table.addCell(new Cell().add(new Paragraph(priceReportProjection.getAppointmentTime().format(formatter))));
-            sum += priceReportProjection.getMoviePrice();
+            sumOriginal += originalPrice;
+            sumDiscounted += discountedPrice;
         }
 
-        table.addCell(new Cell().add(new Paragraph("Total price")));
-        table.addCell(new Cell().add(new Paragraph(String.valueOf(sum))));
+        table.addCell(new Cell().add(new Paragraph("Total price")).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addCell(new Cell().add(new Paragraph(decimalFormat.format(sumOriginal))).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addCell(new Cell().add(new Paragraph(decimalFormat.format(sumDiscounted))).setBackgroundColor(ColorConstants.LIGHT_GRAY).setBold());
+        table.addCell(new Cell(1, 2)); // Merging the last two cells to match the header layout
 
         document.add(table);
         document.close();

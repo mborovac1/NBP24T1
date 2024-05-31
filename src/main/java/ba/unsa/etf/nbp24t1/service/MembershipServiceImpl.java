@@ -1,8 +1,10 @@
 package ba.unsa.etf.nbp24t1.service;
 
+import ba.unsa.etf.nbp24t1.entity.CinemaUserEntity;
 import ba.unsa.etf.nbp24t1.entity.MembershipEntity;
 import ba.unsa.etf.nbp24t1.entity.MembershipType;
 import ba.unsa.etf.nbp24t1.exception.NotFoundException;
+import ba.unsa.etf.nbp24t1.repository.CinemaUserRepository;
 import ba.unsa.etf.nbp24t1.repository.MembershipRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,12 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class MembershipServiceImpl implements MembershipService {
 
     private final MembershipRepository membershipRepository;
+    private final CinemaUserRepository cinemaUserRepository;
 
     @Override
     public List<MembershipEntity> getAll() {
@@ -76,6 +80,20 @@ public class MembershipServiceImpl implements MembershipService {
             // Membership not found
             return new ResponseEntity<>(String.format("Membership with id %s doesn't exist.", id), HttpStatus.NOT_FOUND);
         }
+    }
+
+
+    public double getDiscountByUserId(Long userId) {
+        Optional<CinemaUserEntity> cinemaUserOpt = cinemaUserRepository.findById(userId);
+        if (cinemaUserOpt.isPresent()) {
+            System.out.println(cinemaUserOpt.get().getUserId());
+            CinemaUserEntity cinemaUser = cinemaUserOpt.get();
+            Optional<MembershipEntity> membershipOpt = membershipRepository.findById(cinemaUser.getMembershipId());
+            if (membershipOpt.isPresent()) {
+                return membershipOpt.get().getDiscount();
+            }
+        }
+        return 0.0;
     }
 
 }

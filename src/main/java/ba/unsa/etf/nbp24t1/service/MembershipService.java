@@ -10,4 +10,6 @@ public interface MembershipService {
     List<MembershipEntity> getAll();
     ResponseEntity getMembershipTypeById(int id);
     ResponseEntity updateMembership(int id, String type);
+
+    double getDiscountByUserId(Long userId);
 }

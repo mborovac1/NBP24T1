@@ -52,7 +52,7 @@ const GenerateReport = () => {
           onClick={() => handleGenerateReport("price")}
           style={{ margin: "20px", fontSize: "16px", fontWeight: "bold" }}
         >
-          Generiši izvještaj o cijenama (USKORO)
+          Generiši izvještaj o cijenama
         </Button>
       </Paper>
     </Container>
