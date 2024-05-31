@@ -53,6 +53,8 @@ const Appointments = () => {
                 });
 
                 console.log("Appointment added:", response.data);
+                alert("Appointment successfully added");
+
             } catch (error) {
                 console.error("Failed to add appointment:", error);
                 console.error("Error details:", error.response?.data);
