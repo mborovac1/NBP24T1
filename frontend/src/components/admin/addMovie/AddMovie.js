@@ -123,26 +123,8 @@ export default function AddMovie() {
       }
     };
 
-    const fetchSale = async () => {
-      const token = localStorage.getItem("access_token");
-      try {
-        const BASE_URL = process.env.REACT_APP_BASE_URL;
-        const response = await axios.get(`${BASE_URL}/sale`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const updatedSale = response.data.map((sala) => ({
-          id: sala.id,
-          brojSale: sala.brojSale,
-        }));
-        setSale(updatedSale);
-      } catch (error) {
-        console.error("Failed to fetch sale:", error);
-      }
-    };
-
     fetchFilmovi();
     fetchZanrovi();
-    fetchSale();
   }, []);
 
   const handleClose = () => {
@@ -248,21 +230,6 @@ export default function AddMovie() {
 
                   <label htmlFor={`checkbox-zanr-${zanr.id}`} style={{ marginLeft: "8px" }}>
                     {zanr.nazivZanra}
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="sale">Sale:</label>
-            <div id="sale">
-              {sale.map((sala) => (
-                <div key={sala.id} style={{ display: "flex", alignItems: "center" }}>
-                  <input type="checkbox" id={`checkbox-${sala.id}`} value={sala.id} onChange={(e) => handleSaleCheckboxChange(e, sala)} />
-
-                  <label htmlFor={`checkbox-sale-${sala.id}`} style={{ marginLeft: "8px" }}>
-                    {sala.brojSale}
                   </label>
                 </div>
               ))}
