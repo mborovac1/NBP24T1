@@ -73,7 +73,16 @@ const MoviesUser = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(response.data);
-        setCinemaUserId(response.data.id);
+
+        const response1 = await axios.get(`${BASE_URL}/api/cinemaUsers/`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+    
+          const cinemaUsers = response1.data;
+          const matchingCinemaUser = cinemaUsers.find(cu => cu.userId === response.data.id);
+          if (matchingCinemaUser) {
+            setCinemaUserId(matchingCinemaUser.id);
+          }
       } catch (error) {
         console.error("Failed to fetch user", error);
       }
