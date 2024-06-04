@@ -2,6 +2,8 @@ package ba.unsa.etf.nbp24t1.controller;
 
 import ba.unsa.etf.nbp24t1.entity.MovieReviewEntity;
 import ba.unsa.etf.nbp24t1.service.MovieReviewService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class MovieReviewController {
     }
 
     @PostMapping("/addMovieReview")
+    @Operation(summary = "Movie review", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<?> addMovieReview(@RequestBody MovieReviewEntity movieReview) {
         return movieReviewService.addMovieReview(movieReview);
     }

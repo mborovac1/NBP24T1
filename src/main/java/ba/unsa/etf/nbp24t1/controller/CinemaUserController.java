@@ -26,6 +26,7 @@ public class CinemaUserController {
     }
 
     @GetMapping("/users")
+    @Operation(summary = "Cinema users", security = @SecurityRequirement(name = "bearerAuth"))
     public List<NbpUserEntity> getAllUsers(){
         return cinemaUserService.getAllUsers();
     }

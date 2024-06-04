@@ -1,6 +1,8 @@
 package ba.unsa.etf.nbp24t1.controller;
 import ba.unsa.etf.nbp24t1.entity.AppointmentEntity;
 import ba.unsa.etf.nbp24t1.service.AppointmentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/add")
+    @Operation(summary = "Adding appointment", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity addAppointment(@RequestBody AppointmentEntity appointment) {
         return appointmentService.addAppointment(appointment);
     }
